@@ -50,4 +50,43 @@ export class AuctionService {
     const events = auction.pullDomainEvents();
     await this.eventBus.publish(events);
   }
+
+  async cancelAuction(input: {
+    auctionId: string;
+    reason?: string;
+    now: Date;
+  }): Promise<void> {
+    const auction = await this.auctionRepository.findById(input.auctionId);
+
+    if (!auction) {
+      throw new Error('Auction not found');
+    }
+
+    auction.cancel({
+      now: input.now,
+      reason: input.reason,
+    });
+
+    await this.auctionRepository.save(auction);
+
+    const events = auction.pullDomainEvents();
+    await this.eventBus.publish(events);
+  }
+
+  async finishAuction(input: { auctionId: string; now: Date }): Promise<void> {
+    const auction = await this.auctionRepository.findById(input.auctionId);
+
+    if (!auction) {
+      throw new Error('Auction not found');
+    }
+
+    auction.finish({
+      now: input.now,
+    });
+
+    await this.auctionRepository.save(auction);
+
+    const events = auction.pullDomainEvents();
+    await this.eventBus.publish(events);
+  }
 }
