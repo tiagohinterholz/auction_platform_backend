@@ -7,7 +7,7 @@ import { AuctionModule } from './auction/auction.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '../.env',
+      envFilePath: '.env',
     }),
     DatabaseModule,
     HealthModule,
