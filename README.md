@@ -262,14 +262,14 @@ src/
 │ ├─ domain/
 │ ├─ application/
 │ ├─ infrastructure/
-| |─ presentation/
+| ├─ presentation/
 │ └─ auction.module.ts
 │
 ├─ bidding/
 │ ├─ domain/
 │ ├─ application/
 │ ├─ infrastructure/
-| |─ presentation/
+| ├─ presentation/
 │ └─ bidding.module.ts
 │
 ├─ payment/
