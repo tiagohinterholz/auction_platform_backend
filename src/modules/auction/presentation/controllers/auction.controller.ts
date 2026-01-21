@@ -1,16 +1,26 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import { AuctionService } from '../../infrastructure/services/auction.service';
+
 import { CreateAuctionDto } from '../../application/dtos/create-auction.dto';
 import { ScheduleAuctionDto } from '../../application/dtos/schedule-auction.dto';
 import { CancelAuctionDto } from '../../application/dtos/cancel-auction.dto';
 
+import { CreateAuctionUseCase } from '../../application/use-cases/create-auction.use-case';
+import { ScheduleAuctionUseCase } from '../../application/use-cases/schedule-auction.use-case';
+import { CancelAuctionUseCase } from '../../application/use-cases/cancel-auction.use-case';
+import { FinishAuctionUseCase } from '../../application/use-cases/finish-auction.use-case';
+
 @Controller('auctions')
 export class AuctionController {
-  constructor(private readonly auctionService: AuctionService) {}
+  constructor(
+    private readonly cancelAuctionUseCase: CancelAuctionUseCase,
+    private readonly createAuctionUseCase: CreateAuctionUseCase,
+    private readonly scheduleAuctionUseCase: ScheduleAuctionUseCase,
+    private readonly finishAuctionUseCase: FinishAuctionUseCase,
+  ) {}
 
   @Post()
   async createAuction(@Body() dto: CreateAuctionDto) {
-    await this.auctionService.createAuction(dto);
+    await this.createAuctionUseCase.execute(dto);
 
     return { status: 'created' };
   }
@@ -20,7 +30,7 @@ export class AuctionController {
     @Param('id') auctionId: string,
     @Body() dto: ScheduleAuctionDto,
   ) {
-    await this.auctionService.scheduleAuction({
+    await this.scheduleAuctionUseCase.execute({
       auctionId,
       startTime: dto.startTime,
       endTime: dto.endTime,
@@ -35,7 +45,7 @@ export class AuctionController {
     @Param('id') auctionId: string,
     @Body() dto: CancelAuctionDto,
   ) {
-    await this.auctionService.cancelAuction({
+    await this.cancelAuctionUseCase.execute({
       auctionId,
       reason: dto.reason,
       now: new Date(),
@@ -46,7 +56,7 @@ export class AuctionController {
 
   @Post(':id/finish')
   async finishAuction(@Param('id') auctionId: string) {
-    await this.auctionService.finishAuction({
+    await this.finishAuctionUseCase.execute({
       auctionId,
       now: new Date(),
     });
