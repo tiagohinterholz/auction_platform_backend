@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Auction } from '../domain/auction.aggregate';
-import type { AuctionRepository } from './ports/auction-repository.port';
-import type { EventBus } from './ports/event-bus.port';
-import { AUCTION_REPOSITORY, EVENT_BUS } from './ports/tokens';
+import { Auction } from '../../domain/auction.aggregate';
+import type { AuctionRepository } from '../../domain/ports/auction-repository.port';
+import type { EventBus } from '../../domain/ports/event-bus.port';
+import { AUCTION_REPOSITORY, EVENT_BUS } from '../../domain/ports/tokens';
 
 @Injectable()
 export class AuctionService {

@@ -1,5 +1,5 @@
 import { Auction } from '../../domain/auction.aggregate';
-import { AuctionRepository } from '../../application/ports/auction-repository.port';
+import { AuctionRepository } from '../../domain/ports/auction-repository.port';
 
 export class InMemoryAuctionRepository implements AuctionRepository {
   private storage = new Map<string, Auction>();

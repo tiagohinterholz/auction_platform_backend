@@ -1,4 +1,4 @@
-import { AuctionStatus } from './auction-status.enum';
+import { AuctionStatus } from './enums/auction-status.enum';
 import { InvalidAuctionTransitionException } from './exceptions/invalid-auction-transition.exception';
 import { InvalidAuctionTimeException } from './exceptions/invalid-auction-time.exception';
 import { DomainEvent } from './events/domain-event';

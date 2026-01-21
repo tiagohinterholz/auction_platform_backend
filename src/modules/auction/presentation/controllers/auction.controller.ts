@@ -1,8 +1,8 @@
 import { Body, Controller, Param, Post } from '@nestjs/common';
-import { AuctionService } from '../../application/auction.service';
-import { CreateAuctionDto } from '../dtos/create-auction.dto';
-import { ScheduleAuctionDto } from '../dtos/schedule-auction.dto';
-import { CancelAuctionDto } from '../dtos/cancel-auction.dto';
+import { AuctionService } from '../../infrastructure/services/auction.service';
+import { CreateAuctionDto } from '../../application/dtos/create-auction.dto';
+import { ScheduleAuctionDto } from '../../application/dtos/schedule-auction.dto';
+import { CancelAuctionDto } from '../../application/dtos/cancel-auction.dto';
 
 @Controller('auctions')
 export class AuctionController {

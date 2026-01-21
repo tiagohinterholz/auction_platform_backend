@@ -1,5 +1,5 @@
 import { DomainException } from './domain-exception';
-import { AuctionStatus } from '../auction-status.enum';
+import { AuctionStatus } from '../enums/auction-status.enum';
 
 export class InvalidAuctionTransitionException extends DomainException {
   constructor(from: AuctionStatus, to: AuctionStatus) {
