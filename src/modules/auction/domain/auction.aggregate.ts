@@ -49,20 +49,24 @@ export class Auction {
     return new Auction(props);
   }
 
-  get id(): string {
+  getId(): string {
     return this.props.id;
   }
 
-  get status(): AuctionStatus {
+  getStatus(): AuctionStatus {
     return this.props.status;
   }
 
-  get startTime(): string | undefined {
+  getStartTime(): string | undefined {
     return this.props.startTime;
   }
 
-  get endTime(): string | undefined {
+  getEndTime(): string | undefined {
     return this.props.endTime;
+  }
+
+  getStartingPrice(): number | undefined {
+    return this.props.startingPrice;
   }
 
   pullDomainEvents(): DomainEvent[] {
@@ -91,16 +95,13 @@ export class Auction {
     this.props.endTime = end.toISOString();
     this.props.status = AuctionStatus.SCHEDULED;
 
-    const event: AuctionScheduledEvent = {
-      name: 'AuctionScheduled',
-      occurredAt: params.now.toISOString(),
-      payload: {
-        auctionId: this.id,
+    this.domainEvents.push(
+      new AuctionScheduledEvent({
+        auctionId: this.props.id,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
-      },
-    };
-    this.domainEvents.push(event);
+      }),
+    );
   }
 
   start(params: { now: Date }): void {
@@ -114,12 +115,12 @@ export class Auction {
 
     this.props.status = AuctionStatus.ACTIVE;
 
-    const event: AuctionStartedEvent = {
-      name: 'AuctionStarted',
-      occurredAt: params.now.toISOString(),
-      payload: { auctionId: this.id, startedAt: params.now.toISOString() },
-    };
-    this.domainEvents.push(event);
+    this.domainEvents.push(
+      new AuctionStartedEvent({
+        auctionId: this.props.id,
+        startedAt: params.now.toISOString(),
+      }),
+    );
   }
 
   finish(params: { now: Date }): void {
@@ -133,12 +134,12 @@ export class Auction {
 
     this.props.status = AuctionStatus.FINISHED;
 
-    const event: AuctionFinishedEvent = {
-      name: 'AuctionFinished',
-      occurredAt: params.now.toISOString(),
-      payload: { auctionId: this.id, finishedAt: params.now.toISOString() },
-    };
-    this.domainEvents.push(event);
+    this.domainEvents.push(
+      new AuctionFinishedEvent({
+        auctionId: this.props.id,
+        finishedAt: params.now.toISOString(),
+      }),
+    );
   }
 
   cancel(params: { now: Date; reason?: string }): void {
@@ -158,16 +159,13 @@ export class Auction {
 
     this.props.status = AuctionStatus.CANCELLED;
 
-    const event: AuctionCancelledEvent = {
-      name: 'AuctionCancelled',
-      occurredAt: params.now.toISOString(),
-      payload: {
-        auctionId: this.id,
+    this.domainEvents.push(
+      new AuctionCancelledEvent({
+        auctionId: this.props.id,
         cancelledAt: params.now.toISOString(),
         reason: params.reason,
-      },
-    };
-    this.domainEvents.push(event);
+      }),
+    );
   }
 
   private assertTransition(from: AuctionStatus, to: AuctionStatus): void {

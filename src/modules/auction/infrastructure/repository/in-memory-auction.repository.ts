@@ -5,7 +5,7 @@ export class InMemoryAuctionRepository implements AuctionRepository {
   private storage = new Map<string, Auction>();
 
   async save(auction: Auction): Promise<void> {
-    this.storage.set(auction.id, auction);
+    this.storage.set(auction.getId(), auction);
   }
 
   async findById(id: string): Promise<Auction | null> {

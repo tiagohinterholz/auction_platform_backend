@@ -1,10 +1,27 @@
 import { DomainEvent } from './domain-event';
 
-export type AuctionScheduledEvent = DomainEvent<
+export class AuctionScheduledEvent implements DomainEvent<
   'AuctionScheduled',
   {
     auctionId: string;
     startTime: string;
     endTime: string;
   }
->;
+> {
+  readonly name = 'AuctionScheduled';
+  readonly occurredAt: string;
+  readonly payload: {
+    auctionId: string;
+    startTime: string;
+    endTime: string;
+  };
+
+  constructor(props: {
+    auctionId: string;
+    startTime: string;
+    endTime: string;
+  }) {
+    this.occurredAt = new Date().toISOString();
+    this.payload = props;
+  }
+}
