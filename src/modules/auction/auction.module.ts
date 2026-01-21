@@ -1,14 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AuctionService } from './infrastructure/services/auction.service';
 import { AUCTION_REPOSITORY, EVENT_BUS } from './domain/ports/tokens';
+
 import { InMemoryAuctionRepository } from './infrastructure/repository/in-memory-auction.repository';
 import { InMemoryEventBus } from './infrastructure/event-bus/in-memory-event-bus';
+
 import { AuctionController } from './presentation/controllers/auction.controller';
+
+import { CreateAuctionUseCase } from './application/use-cases/create-auction.use-case';
+import { ScheduleAuctionUseCase } from './application/use-cases/schedule-auction.use-case';
+import { CancelAuctionUseCase } from './application/use-cases/cancel-auction.use-case';
+import { FinishAuctionUseCase } from './application/use-cases/finish-auction.use-case';
 
 @Module({
   controllers: [AuctionController],
   providers: [
-    AuctionService,
+    CreateAuctionUseCase,
+    ScheduleAuctionUseCase,
+    CancelAuctionUseCase,
+    FinishAuctionUseCase,
     {
       provide: AUCTION_REPOSITORY,
       useClass: InMemoryAuctionRepository,
@@ -18,6 +27,5 @@ import { AuctionController } from './presentation/controllers/auction.controller
       useClass: InMemoryEventBus,
     },
   ],
-  exports: [AuctionService],
 })
 export class AuctionModule {}
