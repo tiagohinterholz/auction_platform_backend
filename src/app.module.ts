@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HealthModule } from './modules/health/health.module';
 import { DatabaseModule } from './shared/database/database.module';
 import { AuctionModule } from './modules/auction/auction.module';
+import { BiddingModule } from './modules/bidding/bidding.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -12,6 +13,7 @@ import { AuctionModule } from './modules/auction/auction.module';
     DatabaseModule,
     HealthModule,
     AuctionModule,
+    BiddingModule,
   ],
 })
 export class AppModule {}

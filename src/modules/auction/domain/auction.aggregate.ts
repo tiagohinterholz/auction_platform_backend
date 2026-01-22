@@ -118,6 +118,8 @@ export class Auction {
     this.domainEvents.push(
       new AuctionStartedEvent({
         auctionId: this.props.id,
+        startingPrice: this.props.startingPrice,
+        minimumIncrement: this.props.minimumIncrement,
         startedAt: params.now.toISOString(),
       }),
     );

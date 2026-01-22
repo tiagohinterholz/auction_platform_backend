@@ -1,0 +1,1 @@
+export const BIDDING_REPOSITORY = Symbol('BIDDING_REPOSITORY');
