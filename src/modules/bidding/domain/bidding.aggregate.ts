@@ -25,7 +25,11 @@ export class Bidding {
     auctionId: string;
     startingPrice: number;
     minimumIncrement: number;
+    auctionStatus: 'ACTIVE' | 'FINISHED' | 'CANCELLED';
   }): Bidding {
+    if (params.auctionStatus !== 'ACTIVE') {
+      throw new InvalidBidPlaced('Auction is not active.');
+    }
     return new Bidding({
       id: params.id,
       auctionId: params.auctionId,
