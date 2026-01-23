@@ -9,7 +9,6 @@ describe('BiddingAggregate', () => {
       auctionId: 'auction-1',
       startingPrice: 10000,
       minimumIncrement: 2000,
-      auctionStatus: 'ACTIVE',
     });
 
     bidding.placeBid({
@@ -26,26 +25,13 @@ describe('BiddingAggregate', () => {
   });
 });
 
-describe('BiddingAGgreegate', () => {
-  it('should throw error when Auction status is diferent from ACTIVE', () => {
-    expect(() => {
-      Bidding.open({
-        id: 'bidding-1',
-        auctionId: 'auction-1',
-        startingPrice: 10000,
-        minimumIncrement: 2000,
-        auctionStatus: 'FINISHED',
-      });
-    }).toThrow(InvalidBidPlaced);
-  });
-
+describe('BiddingAggreegate', () => {
   it('should throw error when BidPlaced has amount less than 0', () => {
     const bidding = Bidding.open({
       id: 'bidding-1',
       auctionId: 'auction-1',
       startingPrice: 10000,
       minimumIncrement: 2000,
-      auctionStatus: 'ACTIVE',
     });
 
     expect(() => {
@@ -62,7 +48,6 @@ describe('BiddingAGgreegate', () => {
       auctionId: 'auction-1',
       startingPrice: 10000,
       minimumIncrement: 2000,
-      auctionStatus: 'ACTIVE',
     });
 
     expect(() => {
