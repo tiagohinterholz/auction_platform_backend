@@ -53,6 +53,10 @@ export class Auction {
     return this.props.id;
   }
 
+  getTitle(): string {
+    return this.props.title;
+  }
+
   getStatus(): AuctionStatus {
     return this.props.status;
   }
@@ -65,8 +69,12 @@ export class Auction {
     return this.props.endTime;
   }
 
-  getStartingPrice(): number | undefined {
+  getStartingPrice(): number {
     return this.props.startingPrice;
+  }
+
+  getMinimumIncrement(): number {
+    return this.props.minimumIncrement;
   }
 
   pullDomainEvents(): DomainEvent[] {
@@ -100,6 +108,8 @@ export class Auction {
         auctionId: this.props.id,
         startTime: this.props.startTime,
         endTime: this.props.endTime,
+        startingPrice: this.props.startingPrice,
+        minimumIncrement: this.props.minimumIncrement,
       }),
     );
   }

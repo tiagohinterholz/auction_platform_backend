@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Auction } from '../../domain/auction.aggregate';
-import type { AuctionRepository } from '../../domain/ports/auction-repository.port';
+import type { AuctionRepositoryPort } from '../../domain/ports/auction-repository.port';
 import type { EventBus } from '../../domain/ports/event-bus.port';
 import { AUCTION_REPOSITORY, EVENT_BUS } from '../../domain/ports/tokens';
 
@@ -8,7 +8,7 @@ import { AUCTION_REPOSITORY, EVENT_BUS } from '../../domain/ports/tokens';
 export class CreateAuctionUseCase {
   constructor(
     @Inject(AUCTION_REPOSITORY)
-    private readonly auctionRepository: AuctionRepository,
+    private readonly auctionRepository: AuctionRepositoryPort,
     @Inject(EVENT_BUS)
     private readonly eventBus: EventBus,
   ) {}
@@ -21,7 +21,7 @@ export class CreateAuctionUseCase {
   }): Promise<void> {
     const auction = Auction.create(input);
 
-    await this.auctionRepository.save(auction);
+    this.auctionRepository.save(auction);
 
     const events = auction.pullDomainEvents();
     await this.eventBus.publish(events);

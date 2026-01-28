@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AUCTION_REPOSITORY, EVENT_BUS } from './domain/ports/tokens';
 
-import { InMemoryAuctionRepository } from './infrastructure/repository/in-memory-auction.repository';
+import { AuctionRepository } from './infrastructure/repository/auction.repository';
 import { InMemoryEventBus } from './infrastructure/event-bus/in-memory-event-bus';
 
 import { AuctionController } from './presentation/controllers/auction.controller';
@@ -20,7 +20,7 @@ import { FinishAuctionUseCase } from './application/use-cases/finish-auction.use
     FinishAuctionUseCase,
     {
       provide: AUCTION_REPOSITORY,
-      useClass: InMemoryAuctionRepository,
+      useClass: AuctionRepository,
     },
     {
       provide: EVENT_BUS,
