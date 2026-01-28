@@ -15,6 +15,7 @@ import { AuctionCancelledEvent } from './domain/events/auction-cancelled.event';
 import { AuctionFinishedEvent } from './domain/events/auction-finished.event';
 import { AuctionStartedEvent } from './domain/events/auction-started.event';
 import { AuctionScheduledEvent } from './domain/events/auction-scheduled.event';
+import { AuctionReadRepository } from './application/read-models/auction-read.repository';
 
 @Module({
   controllers: [AuctionController],
@@ -23,10 +24,13 @@ import { AuctionScheduledEvent } from './domain/events/auction-scheduled.event';
     ScheduleAuctionUseCase,
     CancelAuctionUseCase,
     FinishAuctionUseCase,
+
     AuctionStartedHandler,
     AuctionScheduledHandler,
     AuctionFinishedHandler,
     AuctionCancelledHandler,
+
+    AuctionReadRepository,
     {
       provide: AUCTION_REPOSITORY,
       useClass: AuctionRepository,

@@ -1,7 +1,9 @@
 import { AuctionScheduledEvent } from '../../domain/events/auction-scheduled.event';
 import { AuctionStatus } from '../../domain/enums/auction-status.enum';
 import { AuctionReadRepository } from '../read-models/auction-read.repository';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class AuctionScheduledHandler {
   constructor(private readonly readRepository: AuctionReadRepository) {}
 

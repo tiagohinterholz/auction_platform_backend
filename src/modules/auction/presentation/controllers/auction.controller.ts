@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 
 import { CreateAuctionDto } from '../../application/dtos/create-auction.dto';
 import { ScheduleAuctionDto } from '../../application/dtos/schedule-auction.dto';
@@ -8,6 +16,7 @@ import { CreateAuctionUseCase } from '../../application/use-cases/create-auction
 import { ScheduleAuctionUseCase } from '../../application/use-cases/schedule-auction.use-case';
 import { CancelAuctionUseCase } from '../../application/use-cases/cancel-auction.use-case';
 import { FinishAuctionUseCase } from '../../application/use-cases/finish-auction.use-case';
+import { AuctionReadRepository } from '../../application/read-models/auction-read.repository';
 
 @Controller('auctions')
 export class AuctionController {
@@ -16,7 +25,19 @@ export class AuctionController {
     private readonly createAuctionUseCase: CreateAuctionUseCase,
     private readonly scheduleAuctionUseCase: ScheduleAuctionUseCase,
     private readonly finishAuctionUseCase: FinishAuctionUseCase,
+    private readonly auctionReadRepository: AuctionReadRepository,
   ) {}
+
+  @Get(':id')
+  getReadModel(@Param('id') id: string) {
+    const auction = this.auctionReadRepository.findById(id);
+
+    if (!auction) {
+      throw new NotFoundException('Auction read model not found');
+    }
+
+    return auction;
+  }
 
   @Post()
   async createAuction(@Body() dto: CreateAuctionDto) {
@@ -25,7 +46,7 @@ export class AuctionController {
     return { status: 'created' };
   }
 
-  @Post(':id/schedule')
+  @Patch(':id/schedule')
   async scheduleAuction(
     @Param('id') auctionId: string,
     @Body() dto: ScheduleAuctionDto,
@@ -40,7 +61,7 @@ export class AuctionController {
     return { status: 'scheduled' };
   }
 
-  @Post(':id/cancel')
+  @Patch(':id/cancel')
   async cancelAuction(
     @Param('id') auctionId: string,
     @Body() dto: CancelAuctionDto,
@@ -54,7 +75,7 @@ export class AuctionController {
     return { status: 'cancelled' };
   }
 
-  @Post(':id/finish')
+  @Patch(':id/finish')
   async finishAuction(@Param('id') auctionId: string) {
     await this.finishAuctionUseCase.execute({
       auctionId,
