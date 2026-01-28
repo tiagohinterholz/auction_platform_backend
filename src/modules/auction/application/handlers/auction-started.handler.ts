@@ -5,7 +5,7 @@ import { AuctionReadRepository } from '../read-models/auction-read.repository';
 export class AuctionStartedHandler {
   constructor(private readonly readRepository: AuctionReadRepository) {}
 
-  handle(event: AuctionStartedEvent): void {
+  async handle(event: AuctionStartedEvent): Promise<void> {
     const current = this.readRepository.findById(event.payload.auctionId);
 
     this.readRepository.save({
