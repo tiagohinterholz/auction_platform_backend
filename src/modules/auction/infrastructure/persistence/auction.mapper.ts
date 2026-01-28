@@ -1,5 +1,5 @@
 import { Auction } from '../../domain/auction.aggregate';
-import { AuctionPersistenceEntity } from './auction.persistence-entity.ts';
+import { AuctionPersistenceEntity } from './auction.persistence-entity';
 
 export class AuctionMapper {
   static toPersistence(auction: Auction): AuctionPersistenceEntity {

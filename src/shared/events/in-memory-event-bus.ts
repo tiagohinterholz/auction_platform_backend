@@ -16,6 +16,7 @@ export class InMemoryEventBus implements EventBus {
     for (const event of events) {
       const handlers = this.handlers.get(event.constructor.name) ?? [];
       for (const handler of handlers) {
+        console.log('[EVENT]', event.name, event.payload);
         await handler(event);
       }
     }

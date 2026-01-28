@@ -1,5 +1,8 @@
 import { PlaceBidUseCase } from '../use-cases/place-bid.use-case';
 import { InvalidBidPlaced } from '../../domain/exceptions/invalid-bid-placed.exception';
+import { AuctionReadRepository } from 'src/modules/auction/application/read-models/auction-read.repository';
+import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
+import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.enum';
 
 describe('PlaceBidUseCase', () => {
   let useCase: PlaceBidUseCase;
@@ -9,13 +12,9 @@ describe('PlaceBidUseCase', () => {
     save: jest.Mock;
   };
 
-  let auctionReadRepository: {
-    findById: jest.Mock;
-  };
-
-  let eventBus: {
-    publish: jest.Mock;
-  };
+  let auctionReadRepository: AuctionReadRepository;
+  let eventBus: InMemoryEventBus;
+  let publishSpy: jest.SpyInstance;
 
   beforeEach(() => {
     biddingRepository = {
@@ -23,13 +22,9 @@ describe('PlaceBidUseCase', () => {
       save: jest.fn(),
     };
 
-    auctionReadRepository = {
-      findById: jest.fn(),
-    };
-
-    eventBus = {
-      publish: jest.fn(),
-    };
+    auctionReadRepository = new AuctionReadRepository();
+    eventBus = new InMemoryEventBus();
+    publishSpy = jest.spyOn(eventBus, 'publish');
 
     useCase = new PlaceBidUseCase(
       biddingRepository,
@@ -39,9 +34,9 @@ describe('PlaceBidUseCase', () => {
   });
 
   it('should throw error when auction is not ACTIVE', async () => {
-    auctionReadRepository.findById.mockResolvedValue({
-      id: 'auction-1',
-      status: 'FINISHED',
+    auctionReadRepository.save({
+      auctionId: 'auction-1',
+      status: AuctionStatus.FINISHED,
       startingPrice: 10000,
       minimumIncrement: 2000,
     });
@@ -58,9 +53,9 @@ describe('PlaceBidUseCase', () => {
   });
 
   it('should place bid successfully when auction is ACTIVE', async () => {
-    auctionReadRepository.findById.mockResolvedValue({
-      id: 'auction-1',
-      status: 'ACTIVE',
+    auctionReadRepository.save({
+      auctionId: 'auction-1',
+      status: AuctionStatus.ACTIVE,
       startingPrice: 10000,
       minimumIncrement: 2000,
     });
@@ -76,6 +71,6 @@ describe('PlaceBidUseCase', () => {
     });
 
     expect(biddingRepository.save).toHaveBeenCalled();
-    expect(eventBus.publish).toHaveBeenCalled();
+    expect(publishSpy).toHaveBeenCalled();
   });
 });

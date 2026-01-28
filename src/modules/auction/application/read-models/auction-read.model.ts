@@ -1,4 +1,4 @@
-import { AuctionStatus } from '../enums/auction-status.enum';
+import { AuctionStatus } from '../../domain/enums/auction-status.enum';
 
 export type AuctionReadModel = {
   auctionId: string;

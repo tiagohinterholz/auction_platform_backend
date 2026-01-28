@@ -1,7 +1,7 @@
 import { Auction } from '../../domain/auction.aggregate';
 import { AuctionRepositoryPort } from '../../domain/ports/auction-repository.port';
-import { AuctionPersistenceEntity } from '../persistence/auction.persistence-entity.ts';
 import { AuctionMapper } from '../persistence/auction.mapper';
+import { AuctionPersistenceEntity } from '../persistence/auction.persistence-entity';
 
 export class AuctionRepository implements AuctionRepositoryPort {
   private storage = new Map<string, AuctionPersistenceEntity>();

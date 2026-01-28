@@ -9,7 +9,8 @@ import {
 
 import type { EventBus } from 'src/modules/auction/domain/ports/event-bus.port';
 import type { BiddingRepository } from '../../domain/ports/bidding-repository-port';
-import type { AuctionReadRepository } from 'src/modules/auction/domain/read-models/auction-read.repository';
+import { AuctionReadRepository } from 'src/modules/auction/application/read-models/auction-read.repository';
+import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.enum';
 
 @Injectable()
 export class PlaceBidUseCase {
@@ -31,13 +32,13 @@ export class PlaceBidUseCase {
     amount: number;
     now: Date;
   }) {
-    const auction = await this.auctionReadRepository.findById(input.auctionId);
+    const auction = this.auctionReadRepository.findById(input.auctionId);
 
     if (!auction) {
       throw new Error('Auction not found');
     }
 
-    if (auction.status !== 'ACTIVE') {
+    if (auction.status !== AuctionStatus.ACTIVE) {
       throw new InvalidBidPlaced('Auction is not active');
     }
 
@@ -59,6 +60,6 @@ export class PlaceBidUseCase {
     await this.biddingRepository.save(bidding);
 
     const events = bidding.pullDomainEvents();
-    await this.eventBus.publish(events);
+    void this.eventBus.publish(events);
   }
 }
