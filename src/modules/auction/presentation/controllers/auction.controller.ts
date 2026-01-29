@@ -28,6 +28,17 @@ export class AuctionController {
     private readonly auctionReadRepository: AuctionReadRepository,
   ) {}
 
+  @Get()
+  getAllReadModel() {
+    const auctions = this.auctionReadRepository.findAll();
+
+    if (!auctions) {
+      throw new NotFoundException('Auction read model not found');
+    }
+
+    return auctions;
+  }
+
   @Get(':id')
   getReadModel(@Param('id') id: string) {
     const auction = this.auctionReadRepository.findById(id);
