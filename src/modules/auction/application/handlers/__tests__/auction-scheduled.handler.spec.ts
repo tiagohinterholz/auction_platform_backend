@@ -5,7 +5,7 @@ import { AuctionStatus } from '../../../domain/enums/auction-status.enum';
 import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 
 describe('AuctionScheduledHandler', () => {
-  it('should create read model when auction is scheduled', async () => {
+  it('should create read model when auction is scheduled', () => {
     const readRepo = new AuctionReadRepository();
     const handler = new AuctionScheduledHandler(readRepo);
 
@@ -17,7 +17,7 @@ describe('AuctionScheduledHandler', () => {
       minimumIncrement: 100,
     });
 
-    await handler.handle(event);
+    handler.handle(event);
 
     const readModel = readRepo.findById('auction-1');
 
@@ -38,7 +38,9 @@ describe('AuctionScheduledHandler', () => {
 
     eventBus.subscribe(
       AuctionScheduledEvent.name,
-      (event: AuctionScheduledEvent) => handler.handle(event),
+      async (event: AuctionScheduledEvent) => {
+        handler.handle(event);
+      },
     );
 
     await eventBus.publish([

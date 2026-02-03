@@ -8,7 +8,7 @@ import {
 } from '../../../auction/domain/ports/tokens';
 
 import type { EventBus } from 'src/modules/auction/domain/ports/event-bus.port';
-import type { BiddingRepository } from '../../domain/ports/bidding-repository-port';
+import type { BiddingRepositoryPort } from '../../domain/ports/bidding-repository-port';
 import { AuctionReadRepository } from 'src/modules/auction/application/read-models/auction-read.repository';
 import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.enum';
 
@@ -16,7 +16,7 @@ import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.e
 export class PlaceBidUseCase {
   constructor(
     @Inject(BIDDING_REPOSITORY)
-    private readonly biddingRepository: BiddingRepository,
+    private readonly biddingRepository: BiddingRepositoryPort,
 
     @Inject(AUCTION_READ_REPOSITORY)
     private readonly auctionReadRepository: AuctionReadRepository,
@@ -25,7 +25,7 @@ export class PlaceBidUseCase {
     private readonly eventBus: EventBus,
   ) {}
 
-  async execute(input: {
+  execute(input: {
     bidId: string;
     auctionId: string;
     bidderId: string;
@@ -43,7 +43,7 @@ export class PlaceBidUseCase {
     }
 
     const bidding =
-      (await this.biddingRepository.findByAuctionId(input.auctionId)) ??
+      this.biddingRepository.findByAuctionId(input.auctionId) ??
       Bidding.open({
         id: input.bidId,
         auctionId: input.auctionId,
@@ -57,7 +57,7 @@ export class PlaceBidUseCase {
       now: input.now,
     });
 
-    await this.biddingRepository.save(bidding);
+    void this.biddingRepository.save(bidding);
 
     const events = bidding.pullDomainEvents();
     void this.eventBus.publish(events);

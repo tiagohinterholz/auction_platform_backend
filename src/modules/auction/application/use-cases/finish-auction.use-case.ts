@@ -26,6 +26,6 @@ export class FinishAuctionUseCase {
     this.auctionRepository.save(auction);
 
     const events = auction.pullDomainEvents();
-    this.eventBus.publish(events);
+    void this.eventBus.publish(events);
   }
 }

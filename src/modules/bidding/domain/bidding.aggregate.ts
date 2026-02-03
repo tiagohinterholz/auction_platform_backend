@@ -71,6 +71,10 @@ export class Bidding {
     return events;
   }
 
+  getId() {
+    return this.props.id;
+  }
+
   getAuctionId() {
     return this.props.auctionId;
   }
@@ -81,5 +85,17 @@ export class Bidding {
 
   getMinimumIncrement() {
     return this.props.minimumIncrement;
+  }
+
+  getLastBidderId() {
+    return this.props.lastBidderId;
+  }
+
+  getLastBidAmount() {
+    return this.props.lastBidAmount;
+  }
+
+  getLastBidAt() {
+    return this.props.lastBidAt;
   }
 }

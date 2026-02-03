@@ -3,28 +3,21 @@ import { InvalidBidPlaced } from '../../domain/exceptions/invalid-bid-placed.exc
 import { AuctionReadRepository } from 'src/modules/auction/application/read-models/auction-read.repository';
 import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.enum';
+import { BiddingRepository } from '../../infrastructure/repository/bidding.repository';
 
 describe('PlaceBidUseCase', () => {
   let useCase: PlaceBidUseCase;
 
-  let biddingRepository: {
-    findByAuctionId: jest.Mock;
-    save: jest.Mock;
-  };
+  let biddingRepository: BiddingRepository;
 
   let auctionReadRepository: AuctionReadRepository;
   let eventBus: InMemoryEventBus;
-  let publishSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    biddingRepository = {
-      findByAuctionId: jest.fn(),
-      save: jest.fn(),
-    };
+    biddingRepository = new BiddingRepository();
 
     auctionReadRepository = new AuctionReadRepository();
     eventBus = new InMemoryEventBus();
-    publishSpy = jest.spyOn(eventBus, 'publish');
 
     useCase = new PlaceBidUseCase(
       biddingRepository,
@@ -33,7 +26,7 @@ describe('PlaceBidUseCase', () => {
     );
   });
 
-  it('should throw error when auction is not ACTIVE', async () => {
+  it('should throw error when auction is not ACTIVE', () => {
     auctionReadRepository.save({
       auctionId: 'auction-1',
       status: AuctionStatus.FINISHED,
@@ -41,7 +34,7 @@ describe('PlaceBidUseCase', () => {
       minimumIncrement: 2000,
     });
 
-    await expect(
+    expect(() =>
       useCase.execute({
         bidId: 'bid-1',
         auctionId: 'auction-1',
@@ -49,10 +42,10 @@ describe('PlaceBidUseCase', () => {
         amount: 15000,
         now: new Date(),
       }),
-    ).rejects.toThrow(InvalidBidPlaced);
+    ).toThrow(InvalidBidPlaced);
   });
 
-  it('should place bid successfully when auction is ACTIVE', async () => {
+  it('should place bid successfully when auction is ACTIVE', () => {
     auctionReadRepository.save({
       auctionId: 'auction-1',
       status: AuctionStatus.ACTIVE,
@@ -60,9 +53,7 @@ describe('PlaceBidUseCase', () => {
       minimumIncrement: 2000,
     });
 
-    biddingRepository.findByAuctionId.mockResolvedValue(null);
-
-    await useCase.execute({
+    useCase.execute({
       bidId: 'bid-1',
       auctionId: 'auction-1',
       bidderId: 'user-1',
@@ -70,7 +61,10 @@ describe('PlaceBidUseCase', () => {
       now: new Date(),
     });
 
-    expect(biddingRepository.save).toHaveBeenCalled();
-    expect(publishSpy).toHaveBeenCalled();
+    const bidding = biddingRepository.findByAuctionId('auction-1');
+
+    expect(bidding).not.toBeNull();
+    expect(bidding?.getLastBidAmount()).toBe(15000);
+    expect(bidding?.getLastBidderId()).toBe('user-1');
   });
 });

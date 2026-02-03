@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 export class AuctionCancelledHandler {
   constructor(private readonly readRepository: AuctionReadRepository) {}
 
-  async handle(event: AuctionCancelledEvent): Promise<void> {
+  handle(event: AuctionCancelledEvent): void {
     const current = this.readRepository.findById(event.payload.auctionId);
 
     if (!current) {

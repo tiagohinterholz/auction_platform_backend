@@ -51,18 +51,18 @@ export class AuctionController {
   }
 
   @Post()
-  async createAuction(@Body() dto: CreateAuctionDto) {
-    await this.createAuctionUseCase.execute(dto);
+  createAuction(@Body() dto: CreateAuctionDto) {
+    void this.createAuctionUseCase.execute(dto);
 
     return { status: 'created' };
   }
 
   @Patch(':id/schedule')
-  async scheduleAuction(
+  scheduleAuction(
     @Param('id') auctionId: string,
     @Body() dto: ScheduleAuctionDto,
   ) {
-    await this.scheduleAuctionUseCase.execute({
+    void this.scheduleAuctionUseCase.execute({
       auctionId,
       startTime: dto.startTime,
       endTime: dto.endTime,
@@ -73,11 +73,8 @@ export class AuctionController {
   }
 
   @Patch(':id/cancel')
-  async cancelAuction(
-    @Param('id') auctionId: string,
-    @Body() dto: CancelAuctionDto,
-  ) {
-    await this.cancelAuctionUseCase.execute({
+  cancelAuction(@Param('id') auctionId: string, @Body() dto: CancelAuctionDto) {
+    void this.cancelAuctionUseCase.execute({
       auctionId,
       reason: dto.reason,
       now: new Date(),
@@ -87,8 +84,8 @@ export class AuctionController {
   }
 
   @Patch(':id/finish')
-  async finishAuction(@Param('id') auctionId: string) {
-    await this.finishAuctionUseCase.execute({
+  finishAuction(@Param('id') auctionId: string) {
+    void this.finishAuctionUseCase.execute({
       auctionId,
       now: new Date(),
     });
