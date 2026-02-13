@@ -3,7 +3,7 @@ import { IsInt, IsISO8601, IsNotEmpty, IsString, Min } from 'class-validator';
 export class CreateBidDto {
   @IsString()
   @IsNotEmpty()
-  id: string;
+  bidId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -18,5 +18,5 @@ export class CreateBidDto {
   amount: number;
 
   @IsISO8601()
-  now: string;
+  now: Date;
 }
