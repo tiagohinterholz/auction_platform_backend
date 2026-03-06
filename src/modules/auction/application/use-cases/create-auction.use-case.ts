@@ -18,6 +18,7 @@ export class CreateAuctionUseCase {
     title: string;
     startingPrice: number;
     minimumIncrement: number;
+    images: string[];
   }): Promise<void> {
     const auction = Auction.create(input);
 

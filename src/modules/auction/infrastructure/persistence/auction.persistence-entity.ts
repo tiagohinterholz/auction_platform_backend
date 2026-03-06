@@ -8,4 +8,5 @@ export class AuctionPersistenceEntity {
   endTime?: string;
   startingPrice: number;
   minimumIncrement: number;
+  images: string[];
 }

@@ -11,6 +11,7 @@ export class AuctionMapper {
       endTime: auction.getEndTime(),
       startingPrice: auction.getStartingPrice(),
       minimumIncrement: auction.getMinimumIncrement(),
+      images: auction.getImages(),
     };
   }
 
@@ -23,6 +24,7 @@ export class AuctionMapper {
       startTime: entity.startTime,
       endTime: entity.endTime,
       status: entity.status,
+      images: entity.images,
     });
   }
 }

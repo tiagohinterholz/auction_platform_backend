@@ -11,11 +11,12 @@ export class AuctionStartedHandler {
     const current = this.readRepository.findById(event.payload.auctionId);
 
     this.readRepository.save({
+      ...(current ?? {}),
       auctionId: event.payload.auctionId,
       status: AuctionStatus.ACTIVE,
       startingPrice: event.payload.startingPrice,
+      highestBid: event.payload.startingPrice,
       minimumIncrement: event.payload.minimumIncrement,
-      ...(current ?? {}),
     });
   }
 }

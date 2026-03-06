@@ -16,6 +16,8 @@ import { AuctionFinishedEvent } from './domain/events/auction-finished.event';
 import { AuctionStartedEvent } from './domain/events/auction-started.event';
 import { AuctionScheduledEvent } from './domain/events/auction-scheduled.event';
 import { AuctionReadRepository } from './application/read-models/auction-read.repository';
+import { BidPlacedEvent } from '../bidding/domain/events/bid-placed.event';
+import { BidPlacedHandler } from './application/handlers/bid-placed.handler';
 
 @Module({
   controllers: [AuctionController],
@@ -29,6 +31,7 @@ import { AuctionReadRepository } from './application/read-models/auction-read.re
     AuctionScheduledHandler,
     AuctionFinishedHandler,
     AuctionCancelledHandler,
+    BidPlacedHandler,
 
     AuctionReadRepository,
     {
@@ -49,26 +52,34 @@ export class AuctionModule implements OnModuleInit {
     private readonly startedHandler: AuctionStartedHandler,
     private readonly finishedHandler: AuctionFinishedHandler,
     private readonly cancelledHandler: AuctionCancelledHandler,
+    private readonly bidPlacedHandler: BidPlacedHandler,
   ) {}
   onModuleInit() {
     this.eventBus.subscribe(
       AuctionScheduledEvent.name,
-      (event: AuctionScheduledEvent) => this.scheduledHandler.handle(event),
+      async (event: AuctionScheduledEvent) =>
+        this.scheduledHandler.handle(event),
     );
 
     this.eventBus.subscribe(
       AuctionStartedEvent.name,
-      (event: AuctionStartedEvent) => this.startedHandler.handle(event),
+      async (event: AuctionStartedEvent) => this.startedHandler.handle(event),
     );
 
     this.eventBus.subscribe(
       AuctionFinishedEvent.name,
-      (event: AuctionFinishedEvent) => this.finishedHandler.handle(event),
+      async (event: AuctionFinishedEvent) => this.finishedHandler.handle(event),
     );
 
     this.eventBus.subscribe(
       AuctionCancelledEvent.name,
-      (event: AuctionCancelledEvent) => this.cancelledHandler.handle(event),
+      async (event: AuctionCancelledEvent) =>
+        this.cancelledHandler.handle(event),
+    );
+
+    this.eventBus.subscribe(
+      BidPlacedEvent.name,
+      async (event: BidPlacedEvent) => this.bidPlacedHandler.handle(event),
     );
   }
 }

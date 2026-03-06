@@ -8,6 +8,7 @@ export class AuctionScheduledEvent implements DomainEvent<
     endTime: string;
     startingPrice: number;
     minimumIncrement: number;
+    images?: string[];
   }
 > {
   readonly name = 'AuctionScheduled';
@@ -18,6 +19,7 @@ export class AuctionScheduledEvent implements DomainEvent<
     endTime: string;
     startingPrice: number;
     minimumIncrement: number;
+    images?: string[];
   };
 
   constructor(props: {
@@ -26,6 +28,7 @@ export class AuctionScheduledEvent implements DomainEvent<
     endTime: string;
     startingPrice: number;
     minimumIncrement: number;
+    images?: string[];
   }) {
     this.occurredAt = new Date().toISOString();
     this.payload = props;

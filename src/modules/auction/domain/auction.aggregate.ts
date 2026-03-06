@@ -15,6 +15,7 @@ type AuctionProps = {
   startTime?: string; // ISO
   endTime?: string; // ISO
   status: AuctionStatus;
+  images: string[];
 };
 
 export class Auction {
@@ -30,6 +31,7 @@ export class Auction {
     title: string;
     startingPrice: number;
     minimumIncrement: number;
+    images: string[];
   }): Auction {
     if (!params.title?.trim()) throw new Error('title is required');
     if (params.startingPrice < 0) throw new Error('startingPrice must be >= 0');
@@ -42,6 +44,7 @@ export class Auction {
       startingPrice: params.startingPrice,
       minimumIncrement: params.minimumIncrement,
       status: AuctionStatus.DRAFT,
+      images: params.images,
     });
   }
 
@@ -75,6 +78,10 @@ export class Auction {
 
   getMinimumIncrement(): number {
     return this.props.minimumIncrement;
+  }
+
+  getImages(): string[] {
+    return this.props.images;
   }
 
   pullDomainEvents(): DomainEvent[] {
@@ -186,3 +193,4 @@ export class Auction {
     }
   }
 }
+export { AuctionStatus };

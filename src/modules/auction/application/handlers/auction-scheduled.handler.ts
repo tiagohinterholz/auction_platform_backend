@@ -17,7 +17,9 @@ export class AuctionScheduledHandler {
       startTime: event.payload.startTime,
       endTime: event.payload.endTime,
       startingPrice: event.payload.startingPrice,
+      highestBid: event.payload.startingPrice,
       minimumIncrement: event.payload.minimumIncrement,
+      images: event.payload.images ?? [],
     });
   }
 }

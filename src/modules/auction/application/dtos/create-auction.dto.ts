@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CreateAuctionDto {
   @IsString()
@@ -16,4 +16,8 @@ export class CreateAuctionDto {
   @IsInt()
   @Min(1)
   minimumIncrement: number;
+
+  @IsArray()
+  @IsString({ each: true })
+  images: string[];
 }
