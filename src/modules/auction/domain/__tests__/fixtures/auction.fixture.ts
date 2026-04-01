@@ -15,6 +15,7 @@ export class AuctionFixture {
       title: 'MacBook Pro',
       startingPrice: 10000,
       minimumIncrement: 1000,
+      images: [],
       ...overrides,
     });
   }
