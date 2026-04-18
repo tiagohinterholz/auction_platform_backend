@@ -3,15 +3,15 @@ import { AuctionReadModel } from '../read-models/auction-read.model';
 export class AuctionReadRepository {
   private store = new Map<string, AuctionReadModel>();
 
-  save(model: AuctionReadModel) {
+  async save(model: AuctionReadModel): Promise<void> {
     this.store.set(model.auctionId, model);
   }
 
-  findById(id: string) {
+  async findById(id: string): Promise<AuctionReadModel | null> {
     return this.store.get(id);
   }
 
-  findAll() {
+  async findAll(): Promise<AuctionReadModel[]> {
     return [...this.store.values()];
   }
 }

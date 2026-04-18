@@ -12,6 +12,7 @@ describe('PlaceBidUseCase', () => {
 
   let auctionReadRepository: AuctionReadRepository;
   let eventBus: InMemoryEventBus;
+  let lockService: any;
 
   beforeEach(() => {
     biddingRepository = new BiddingRepository();
@@ -19,22 +20,29 @@ describe('PlaceBidUseCase', () => {
     auctionReadRepository = new AuctionReadRepository();
     eventBus = new InMemoryEventBus();
 
+    lockService = {
+      acquire: jest.fn().mockResolvedValue(true),
+      release: jest.fn().mockResolvedValue(undefined),
+    };
+
     useCase = new PlaceBidUseCase(
       biddingRepository,
       auctionReadRepository,
       eventBus,
+      lockService,
     );
   });
 
-  it('should throw error when auction is not ACTIVE', () => {
-    auctionReadRepository.save({
+  it('should throw error when auction is not ACTIVE', async () => {
+    await auctionReadRepository.save({
       auctionId: 'auction-1',
       status: AuctionStatus.FINISHED,
       startingPrice: 10000,
       minimumIncrement: 2000,
+      highestBid: 10000,
     });
 
-    expect(() =>
+    await expect(() =>
       useCase.execute({
         bidId: 'bid-1',
         auctionId: 'auction-1',
@@ -42,18 +50,19 @@ describe('PlaceBidUseCase', () => {
         amount: 15000,
         now: new Date(),
       }),
-    ).toThrow(InvalidBidPlaced);
+    ).rejects.toThrow(InvalidBidPlaced);
   });
 
-  it('should place bid successfully when auction is ACTIVE', () => {
-    auctionReadRepository.save({
+  it('should place bid successfully when auction is ACTIVE', async () => {
+    await auctionReadRepository.save({
       auctionId: 'auction-1',
       status: AuctionStatus.ACTIVE,
       startingPrice: 10000,
       minimumIncrement: 2000,
+      highestBid: 10000,
     });
 
-    useCase.execute({
+    await useCase.execute({
       bidId: 'bid-1',
       auctionId: 'auction-1',
       bidderId: 'user-1',
@@ -61,7 +70,7 @@ describe('PlaceBidUseCase', () => {
       now: new Date(),
     });
 
-    const bidding = biddingRepository.findByAuctionId('auction-1');
+    const bidding = await biddingRepository.findByAuctionId('auction-1');
 
     expect(bidding).not.toBeNull();
     expect(bidding?.getLastBidAmount()).toBe(15000);

@@ -6,12 +6,12 @@ import { AuctionPersistenceEntity } from '../persistence/auction.persistence-ent
 export class AuctionRepository implements AuctionRepositoryPort {
   private storage = new Map<string, AuctionPersistenceEntity>();
 
-  save(auction: Auction): void {
+  async save(auction: Auction): Promise<void> {
     const entity = AuctionMapper.toPersistence(auction);
     this.storage.set(entity.auctionId, entity);
   }
 
-  findById(id: string): Auction | null {
+  async findById(id: string): Promise<Auction | null> {
     const entity = this.storage.get(id);
     if (!entity) return null;
     return AuctionMapper.toDomain(entity);

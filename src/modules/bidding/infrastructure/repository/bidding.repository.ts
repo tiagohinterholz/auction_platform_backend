@@ -6,18 +6,18 @@ import { BiddingPersistenceEntity } from '../persistence/bidding.persistence-ent
 export class BiddingRepository implements BiddingRepositoryPort {
   private storage = new Map<string, BiddingPersistenceEntity>();
 
-  findByAuctionId(auctionId: string): Bidding | null {
+  async findByAuctionId(auctionId: string): Promise<Bidding | null> {
     const entity = this.storage.get(auctionId);
 
     return entity ? BiddingMapper.toDomain(entity) : null;
   }
 
-  save(bidding: Bidding): void {
+  async save(bidding: Bidding): Promise<void> {
     const entity = BiddingMapper.toPersistence(bidding);
     this.storage.set(bidding.getAuctionId(), entity);
   }
 
-  findAllByAuctionId(auctionId: string): Bidding[] {
+  async findAllByAuctionId(auctionId: string): Promise<Bidding[]> {
     const bids: Bidding[] = [];
 
     for (const entity of this.storage.values()) {

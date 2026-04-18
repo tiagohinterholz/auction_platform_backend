@@ -5,7 +5,7 @@ import { AuctionStatus } from '../../../domain/enums/auction-status.enum';
 import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 
 describe('AuctionScheduledHandler', () => {
-  it('should create read model when auction is scheduled', () => {
+  it('should create read model when auction is scheduled', async () => {
     const readRepo = new AuctionReadRepository();
     const handler = new AuctionScheduledHandler(readRepo);
 
@@ -13,19 +13,22 @@ describe('AuctionScheduledHandler', () => {
       auctionId: 'auction-1',
       startTime: '2026-01-01T10:00:00Z',
       endTime: '2026-01-01T12:00:00Z',
+      images: [],
       startingPrice: 1000,
       minimumIncrement: 100,
     });
 
-    handler.handle(event);
+    await handler.handle(event);
 
-    const readModel = readRepo.findById('auction-1');
+    const readModel = await readRepo.findById('auction-1');
 
     expect(readModel).toEqual({
       auctionId: 'auction-1',
       status: AuctionStatus.SCHEDULED,
       startTime: '2026-01-01T10:00:00Z',
       endTime: '2026-01-01T12:00:00Z',
+      highestBid: 1000,
+      images: [],
       startingPrice: 1000,
       minimumIncrement: 100,
     });
@@ -39,7 +42,7 @@ describe('AuctionScheduledHandler', () => {
     eventBus.subscribe(
       AuctionScheduledEvent.name,
       async (event: AuctionScheduledEvent) => {
-        handler.handle(event);
+        await handler.handle(event);
       },
     );
 
@@ -53,7 +56,7 @@ describe('AuctionScheduledHandler', () => {
       }),
     ]);
 
-    expect(readRepo.findById('auction-1')?.status).toBe(
+    expect((await readRepo.findById('auction-1'))?.status).toBe(
       AuctionStatus.SCHEDULED,
     );
   });

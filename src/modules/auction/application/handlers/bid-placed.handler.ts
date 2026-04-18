@@ -1,22 +1,34 @@
 import { BidPlacedEvent } from '../../../bidding/domain/events/bid-placed.event';
 import { Injectable } from '@nestjs/common';
 import { AuctionReadRepository } from '../read-models/auction-read.repository';
-import { AuctionStatus } from '../../domain/auction.aggregate';
+import { AuctionRepository } from '../../infrastructure/repository/auction.repository';
 
 @Injectable()
 export class BidPlacedHandler {
-  constructor(private readonly readRepository: AuctionReadRepository) {}
+  constructor(
+    private readonly readRepository: AuctionReadRepository,
+    private readonly writeRepository: AuctionRepository,
+  ) {}
 
-  handle(event: BidPlacedEvent): void {
-    const current = this.readRepository.findById(event.payload.auctionId);
+  async handle(event: BidPlacedEvent): Promise<void> {
+    const auction = await this.writeRepository.findById(
+      event.payload.auctionId,
+    );
 
-    this.readRepository.save({
-      ...(current ?? {}),
-      auctionId: event.payload.auctionId,
-      status: AuctionStatus.ACTIVE,
-      startingPrice: current?.startingPrice ?? 0,
-      minimumIncrement: current?.minimumIncrement ?? 0,
-      highestBid: event.payload.amount,
-    });
+    if (!auction) return;
+
+    auction.applyAntiSniping(new Date());
+
+    await this.writeRepository.save(auction);
+    const currentReadModel = await this.readRepository.findById(
+      event.payload.auctionId,
+    );
+    if (currentReadModel) {
+      await this.readRepository.save({
+        ...currentReadModel,
+        highestBid: event.payload.amount,
+        endTime: auction.getEndTime(),
+      });
+    }
   }
 }

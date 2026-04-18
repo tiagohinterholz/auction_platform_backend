@@ -1,5 +1,5 @@
 export enum AuctionStatus {
-  DRAFT = 'DRAFT',
+  CREATED = 'CREATED',
   SCHEDULED = 'SCHEDULED',
   ACTIVE = 'ACTIVE',
   FINISHED = 'FINISHED',

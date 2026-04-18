@@ -6,6 +6,7 @@ import { AuctionScheduledEvent } from './events/auction-scheduled.event';
 import { AuctionStartedEvent } from './events/auction-started.event';
 import { AuctionFinishedEvent } from './events/auction-finished.event';
 import { AuctionCancelledEvent } from './events/auction-cancelled.event';
+import { AuctionExtendedEvent } from './events/auction-extended.event';
 
 type AuctionProps = {
   id: string;
@@ -24,32 +25,6 @@ export class Auction {
 
   private constructor(props: AuctionProps) {
     this.props = props;
-  }
-
-  static create(params: {
-    id: string;
-    title: string;
-    startingPrice: number;
-    minimumIncrement: number;
-    images: string[];
-  }): Auction {
-    if (!params.title?.trim()) throw new Error('title is required');
-    if (params.startingPrice < 0) throw new Error('startingPrice must be >= 0');
-    if (params.minimumIncrement <= 0)
-      throw new Error('minimumIncrement must be > 0');
-
-    return new Auction({
-      id: params.id,
-      title: params.title.trim(),
-      startingPrice: params.startingPrice,
-      minimumIncrement: params.minimumIncrement,
-      status: AuctionStatus.DRAFT,
-      images: params.images,
-    });
-  }
-
-  static restore(props: AuctionProps): Auction {
-    return new Auction(props);
   }
 
   getId(): string {
@@ -90,8 +65,52 @@ export class Auction {
     return events;
   }
 
+  applyAntiSniping(now: Date): void {
+    if (this.props.status !== AuctionStatus.ACTIVE) return;
+    if (!this.props.endTime) return;
+    const end = new Date(this.props.endTime);
+    const diffInSeconds = (end.getTime() - now.getTime()) / 1000;
+    if (diffInSeconds > 0 && diffInSeconds <= 30) {
+      const newEnd = new Date(end.getTime() + 60 * 1000);
+      this.props.endTime = newEnd.toISOString();
+
+      this.domainEvents.push(
+        new AuctionExtendedEvent({
+          auctionId: this.props.id,
+          newEndTime: this.props.endTime,
+        }),
+      );
+    }
+  }
+
+  static create(params: {
+    id: string;
+    title: string;
+    startingPrice: number;
+    minimumIncrement: number;
+    images: string[];
+  }): Auction {
+    if (!params.title?.trim()) throw new Error('title is required');
+    if (params.startingPrice < 0) throw new Error('startingPrice must be >= 0');
+    if (params.minimumIncrement <= 0)
+      throw new Error('minimumIncrement must be > 0');
+
+    return new Auction({
+      id: params.id,
+      title: params.title.trim(),
+      startingPrice: params.startingPrice,
+      minimumIncrement: params.minimumIncrement,
+      status: AuctionStatus.CREATED,
+      images: params.images,
+    });
+  }
+
+  static restore(props: AuctionProps): Auction {
+    return new Auction(props);
+  }
+
   schedule(params: { startTime: string; endTime: string; now: Date }): void {
-    this.assertTransition(AuctionStatus.DRAFT, AuctionStatus.SCHEDULED);
+    this.assertTransition(AuctionStatus.CREATED, AuctionStatus.SCHEDULED);
 
     const start = new Date(params.startTime);
     const end = new Date(params.endTime);
@@ -164,7 +183,7 @@ export class Auction {
   cancel(params: { now: Date; reason?: string }): void {
     const from = this.props.status;
     const allowed = [
-      AuctionStatus.DRAFT,
+      AuctionStatus.CREATED,
       AuctionStatus.SCHEDULED,
       AuctionStatus.ACTIVE,
     ];

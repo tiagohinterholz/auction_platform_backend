@@ -4,12 +4,13 @@ import { AuctionFinishedEvent } from '../events/auction-finished.event';
 import { AuctionCancelledEvent } from '../events/auction-cancelled.event';
 import { AuctionFixture } from './fixtures/auction.fixture';
 import { InvalidAuctionTransitionException } from '../exceptions/invalid-auction-transition.exception';
+import { Auction } from '../auction.aggregate';
 
 describe('AuctionAggregate', () => {
-  it('should create auction in DRAFT status', () => {
+  it('should create auction in CREATED status', () => {
     const auction = AuctionFixture.draft();
 
-    expect(auction.getStatus()).toBe(AuctionStatus.DRAFT);
+    expect(auction.getStatus()).toBe(AuctionStatus.CREATED);
     expect(auction.getStartingPrice()).toBe(10000);
   });
 
@@ -71,6 +72,28 @@ describe('AuctionAggregate', () => {
     expect(auction.getStatus()).toBe(AuctionStatus.CANCELLED);
     expect(events).toHaveLength(1);
     expect(events[0]).toBeInstanceOf(AuctionCancelledEvent);
+  });
+
+  it('should extend end time when bid is placed within 30 seconds of end', () => {
+    const now = new Date();
+    const originalEndTime = new Date(now.getTime() + 20 * 1000);
+
+    const auction = Auction.restore({
+      id: 'auction-1',
+      title: 'Test',
+      startingPrice: 1000,
+      minimumIncrement: 100,
+      status: AuctionStatus.ACTIVE,
+      endTime: originalEndTime.toISOString(),
+      images: [],
+    });
+
+    auction.applyAntiSniping(now);
+
+    const expectedEndTime = new Date(originalEndTime.getTime() + 60 * 1000);
+    expect(auction.getEndTime()).toBe(expectedEndTime.toISOString());
+    const events = auction.pullDomainEvents();
+    expect(events.some((e) => e.name === 'AuctionExtended')).toBe(true);
   });
 });
 
