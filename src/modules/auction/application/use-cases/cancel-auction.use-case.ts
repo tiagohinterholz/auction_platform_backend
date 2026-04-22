@@ -12,8 +12,12 @@ export class CancelAuctionUseCase {
     private readonly eventBus: EventBus,
   ) {}
 
-  execute(input: { auctionId: string; reason?: string; now: Date }): void {
-    const auction = this.auctionRepository.findById(input.auctionId);
+  async execute(input: {
+    auctionId: string;
+    reason?: string;
+    now: Date;
+  }): Promise<void> {
+    const auction = await this.auctionRepository.findById(input.auctionId);
 
     if (!auction) {
       throw new Error('Auction not found');
@@ -24,9 +28,9 @@ export class CancelAuctionUseCase {
       reason: input.reason,
     });
 
-    this.auctionRepository.save(auction);
+    await this.auctionRepository.save(auction);
 
     const events = auction.pullDomainEvents();
-    void this.eventBus.publish(events);
+    await this.eventBus.publish(events);
   }
 }

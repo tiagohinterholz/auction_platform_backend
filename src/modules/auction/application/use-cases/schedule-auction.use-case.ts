@@ -12,13 +12,13 @@ export class ScheduleAuctionUseCase {
     private readonly eventBus: EventBus,
   ) {}
 
-  execute(input: {
+  async execute(input: {
     auctionId: string;
     startTime: string;
     endTime: string;
     now: Date;
-  }): void {
-    const auction = this.auctionRepository.findById(input.auctionId);
+  }): Promise<void> {
+    const auction = await this.auctionRepository.findById(input.auctionId);
 
     if (!auction) {
       throw new Error('Auction not found');
@@ -30,9 +30,9 @@ export class ScheduleAuctionUseCase {
       now: input.now,
     });
 
-    this.auctionRepository.save(auction);
+    await this.auctionRepository.save(auction);
 
     const events = auction.pullDomainEvents();
-    void this.eventBus.publish(events);
+    await this.eventBus.publish(events);
   }
 }

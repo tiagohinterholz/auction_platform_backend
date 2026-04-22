@@ -29,8 +29,8 @@ export class AuctionController {
   ) {}
 
   @Get()
-  getAllReadModel() {
-    const auctions = this.auctionReadRepository.findAll();
+  async getAllReadModel() {
+    const auctions = await this.auctionReadRepository.findAll();
 
     if (!auctions) {
       throw new NotFoundException('Auction read model not found');
@@ -40,8 +40,8 @@ export class AuctionController {
   }
 
   @Get(':id')
-  getReadModel(@Param('id') id: string) {
-    const auction = this.auctionReadRepository.findById(id);
+  async getReadModel(@Param('id') id: string) {
+    const auction = await this.auctionReadRepository.findById(id);
 
     if (!auction) {
       throw new NotFoundException('Auction read model not found');
@@ -51,18 +51,18 @@ export class AuctionController {
   }
 
   @Post()
-  createAuction(@Body() dto: CreateAuctionDto) {
-    void this.createAuctionUseCase.execute(dto);
+  async createAuction(@Body() dto: CreateAuctionDto) {
+    await this.createAuctionUseCase.execute(dto);
 
     return { status: 'created' };
   }
 
   @Patch(':id/schedule')
-  scheduleAuction(
+  async scheduleAuction(
     @Param('id') auctionId: string,
     @Body() dto: ScheduleAuctionDto,
   ) {
-    void this.scheduleAuctionUseCase.execute({
+    await this.scheduleAuctionUseCase.execute({
       auctionId,
       startTime: dto.startTime,
       endTime: dto.endTime,
@@ -73,8 +73,11 @@ export class AuctionController {
   }
 
   @Patch(':id/cancel')
-  cancelAuction(@Param('id') auctionId: string, @Body() dto: CancelAuctionDto) {
-    void this.cancelAuctionUseCase.execute({
+  async cancelAuction(
+    @Param('id') auctionId: string,
+    @Body() dto: CancelAuctionDto,
+  ) {
+    await this.cancelAuctionUseCase.execute({
       auctionId,
       reason: dto.reason,
       now: new Date(),
@@ -84,8 +87,8 @@ export class AuctionController {
   }
 
   @Patch(':id/finish')
-  finishAuction(@Param('id') auctionId: string) {
-    void this.finishAuctionUseCase.execute({
+  async finishAuction(@Param('id') auctionId: string) {
+    await this.finishAuctionUseCase.execute({
       auctionId,
       now: new Date(),
     });
