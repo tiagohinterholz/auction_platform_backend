@@ -7,7 +7,8 @@ import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 describe('AuctionScheduledHandler', () => {
   it('should create read model when auction is scheduled', async () => {
     const readRepo = new AuctionReadRepository();
-    const handler = new AuctionScheduledHandler(readRepo);
+    const mockQueue = { add: jest.fn() };
+    const handler = new AuctionScheduledHandler(readRepo, mockQueue);
 
     const event = new AuctionScheduledEvent({
       auctionId: 'auction-1',
@@ -32,12 +33,22 @@ describe('AuctionScheduledHandler', () => {
       startingPrice: 1000,
       minimumIncrement: 100,
     });
+    expect(mockQueue.add).toHaveBeenCalledWith(
+      'start-auction',
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockQueue.add).toHaveBeenCalledWith(
+      'finish-auction',
+      expect.any(Object),
+      expect.any(Object),
+    );
   });
   it('should update read model when event is published', async () => {
     const eventBus = new InMemoryEventBus();
     const readRepo = new AuctionReadRepository();
-
-    const handler = new AuctionScheduledHandler(readRepo);
+    const mockQueue = { add: jest.fn() };
+    const handler = new AuctionScheduledHandler(readRepo, mockQueue);
 
     eventBus.subscribe(
       AuctionScheduledEvent.name,
@@ -58,6 +69,16 @@ describe('AuctionScheduledHandler', () => {
 
     expect((await readRepo.findById('auction-1'))?.status).toBe(
       AuctionStatus.SCHEDULED,
+    );
+    expect(mockQueue.add).toHaveBeenCalledWith(
+      'start-auction',
+      expect.any(Object),
+      expect.any(Object),
+    );
+    expect(mockQueue.add).toHaveBeenCalledWith(
+      'finish-auction',
+      expect.any(Object),
+      expect.any(Object),
     );
   });
 });
