@@ -4,7 +4,7 @@ import { AUCTION_REPOSITORY, EVENT_BUS } from '../../domain/ports/tokens';
 import { AuctionRepository } from '../../infrastructure/repository/auction.repository';
 
 @Injectable()
-export class FinishAuctionUseCase {
+export class StartAuctionUseCase {
   constructor(
     @Inject(AUCTION_REPOSITORY)
     private readonly auctionRepository: AuctionRepository,
@@ -19,7 +19,7 @@ export class FinishAuctionUseCase {
       throw new Error('Auction not found');
     }
 
-    auction.finish({
+    auction.start({
       now: input.now,
     });
 

@@ -6,6 +6,7 @@ import { CreateAuctionUseCase } from './application/use-cases/create-auction.use
 import { ScheduleAuctionUseCase } from './application/use-cases/schedule-auction.use-case';
 import { CancelAuctionUseCase } from './application/use-cases/cancel-auction.use-case';
 import { FinishAuctionUseCase } from './application/use-cases/finish-auction.use-case';
+import { StartAuctionUseCase } from './application/use-cases/start-auction.use-case';
 import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 import { AuctionStartedHandler } from './application/handlers/auction-started.handler';
 import { AuctionScheduledHandler } from './application/handlers/auction-scheduled.handler';
@@ -18,14 +19,24 @@ import { AuctionScheduledEvent } from './domain/events/auction-scheduled.event';
 import { AuctionReadRepository } from './application/read-models/auction-read.repository';
 import { BidPlacedEvent } from '../bidding/domain/events/bid-placed.event';
 import { BidPlacedHandler } from './application/handlers/bid-placed.handler';
+import { AuctionProcessor } from './application/processors/auction.processor';
+import { BullModule } from '@nestjs/bullmq';
 
 @Module({
+  imports: [
+    BullModule.registerQueue({
+      name: 'auction-jobs',
+    }),
+  ],
   controllers: [AuctionController],
   providers: [
     CreateAuctionUseCase,
     ScheduleAuctionUseCase,
     CancelAuctionUseCase,
     FinishAuctionUseCase,
+    StartAuctionUseCase,
+
+    AuctionProcessor,
 
     AuctionStartedHandler,
     AuctionScheduledHandler,
