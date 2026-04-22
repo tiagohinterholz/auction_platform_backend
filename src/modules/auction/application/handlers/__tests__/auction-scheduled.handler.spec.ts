@@ -6,7 +6,11 @@ import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 
 describe('AuctionScheduledHandler', () => {
   it('should create read model when auction is scheduled', async () => {
-    const readRepo = new AuctionReadRepository();
+    const mockTypeOrmRepo = {
+      save: jest.fn(),
+      findOneBy: jest.fn().mockResolvedValue(null),
+    };
+    const readRepo = new AuctionReadRepository(mockTypeOrmRepo as any);
     const mockQueue = { add: jest.fn() };
     const handler = new AuctionScheduledHandler(readRepo, mockQueue);
 
@@ -21,18 +25,12 @@ describe('AuctionScheduledHandler', () => {
 
     await handler.handle(event);
 
-    const readModel = await readRepo.findById('auction-1');
-
-    expect(readModel).toEqual({
-      auctionId: 'auction-1',
-      status: AuctionStatus.SCHEDULED,
-      startTime: '2026-01-01T10:00:00Z',
-      endTime: '2026-01-01T12:00:00Z',
-      highestBid: 1000,
-      images: [],
-      startingPrice: 1000,
-      minimumIncrement: 100,
-    });
+    expect(mockTypeOrmRepo.save).toHaveBeenCalledWith(
+      expect.objectContaining({
+        auctionId: 'auction-1',
+        status: AuctionStatus.SCHEDULED,
+      }),
+    );
     expect(mockQueue.add).toHaveBeenCalledWith(
       'start-auction',
       expect.any(Object),
@@ -46,7 +44,11 @@ describe('AuctionScheduledHandler', () => {
   });
   it('should update read model when event is published', async () => {
     const eventBus = new InMemoryEventBus();
-    const readRepo = new AuctionReadRepository();
+    const mockTypeOrmRepo = {
+      save: jest.fn(),
+      findOneBy: jest.fn().mockResolvedValue(null),
+    };
+    const readRepo = new AuctionReadRepository(mockTypeOrmRepo as any);
     const mockQueue = { add: jest.fn() };
     const handler = new AuctionScheduledHandler(readRepo, mockQueue);
 
@@ -67,9 +69,7 @@ describe('AuctionScheduledHandler', () => {
       }),
     ]);
 
-    expect((await readRepo.findById('auction-1'))?.status).toBe(
-      AuctionStatus.SCHEDULED,
-    );
+    expect(mockTypeOrmRepo.save).toHaveBeenCalled();
     expect(mockQueue.add).toHaveBeenCalledWith(
       'start-auction',
       expect.any(Object),

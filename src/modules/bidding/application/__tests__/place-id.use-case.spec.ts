@@ -15,9 +15,31 @@ describe('PlaceBidUseCase', () => {
   let lockService: any;
 
   beforeEach(() => {
-    biddingRepository = new BiddingRepository();
+    const mockBiddingTypeOrm = {
+      save: jest.fn().mockImplementation((e) => {
+        biddingRepository['_bids'] = biddingRepository['_bids'] || new Map();
+        biddingRepository['_bids'].set(e.auctionId, e);
+      }),
+      findOneBy: jest
+        .fn()
+        .mockImplementation(
+          (obj) => biddingRepository['_bids']?.get(obj.auctionId) || null,
+        ),
+      findBy: jest.fn().mockResolvedValue([]),
+    };
 
-    auctionReadRepository = new AuctionReadRepository();
+    const mockReadTypeOrm = {
+      _store: new Map(),
+      save: jest.fn().mockImplementation(function (e) {
+        this._store.set(e.auctionId, e);
+      }),
+      findOneBy: jest.fn().mockImplementation(function (obj) {
+        return this._store.get(obj.auctionId) || null;
+      }),
+    };
+
+    biddingRepository = new BiddingRepository(mockBiddingTypeOrm as any);
+    auctionReadRepository = new AuctionReadRepository(mockReadTypeOrm as any);
     eventBus = new InMemoryEventBus();
 
     lockService = {
@@ -70,10 +92,10 @@ describe('PlaceBidUseCase', () => {
       now: new Date(),
     });
 
-    const bidding = await biddingRepository.findByAuctionId('auction-1');
+    const biddingResult = await biddingRepository.findByAuctionId('auction-1');
 
-    expect(bidding).not.toBeNull();
-    expect(bidding?.getLastBidAmount()).toBe(15000);
-    expect(bidding?.getLastBidderId()).toBe('user-1');
+    expect(biddingResult).not.toBeNull();
+    expect(biddingResult?.getLastBidAmount()).toBe(15000);
+    expect(biddingResult?.getLastBidderId()).toBe('user-1');
   });
 });
