@@ -6,6 +6,8 @@ import { AuctionModule } from './modules/auction/auction.module';
 import { BiddingModule } from './modules/bidding/bidding.module';
 import { RedisModule } from './shared/redis/redis.module';
 import { LocksModule } from './shared/locks/locks.module';
+import { EventsModule } from './shared/events/events.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 @Module({
@@ -19,6 +21,8 @@ import { ConfigService } from '@nestjs/config';
     AuctionModule,
     BiddingModule,
     RedisModule,
+    EventsModule,
+    NotificationsModule,
     LocksModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],

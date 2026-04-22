@@ -7,7 +7,6 @@ import { ScheduleAuctionUseCase } from './application/use-cases/schedule-auction
 import { CancelAuctionUseCase } from './application/use-cases/cancel-auction.use-case';
 import { FinishAuctionUseCase } from './application/use-cases/finish-auction.use-case';
 import { StartAuctionUseCase } from './application/use-cases/start-auction.use-case';
-import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 import { AuctionStartedHandler } from './application/handlers/auction-started.handler';
 import { AuctionScheduledHandler } from './application/handlers/auction-scheduled.handler';
 import { AuctionFinishedHandler } from './application/handlers/auction-finished.handler';
@@ -21,6 +20,7 @@ import { BidPlacedEvent } from '../bidding/domain/events/bid-placed.event';
 import { BidPlacedHandler } from './application/handlers/bid-placed.handler';
 import { AuctionProcessor } from './application/processors/auction.processor';
 import { BullModule } from '@nestjs/bullmq';
+import type { EventBus } from './domain/ports/event-bus.port';
 
 @Module({
   imports: [
@@ -49,16 +49,12 @@ import { BullModule } from '@nestjs/bullmq';
       provide: AUCTION_REPOSITORY,
       useClass: AuctionRepository,
     },
-    {
-      provide: EVENT_BUS,
-      useClass: InMemoryEventBus,
-    },
   ],
 })
 export class AuctionModule implements OnModuleInit {
   constructor(
     @Inject(EVENT_BUS)
-    private readonly eventBus: InMemoryEventBus,
+    private readonly eventBus: EventBus,
     private readonly scheduledHandler: AuctionScheduledHandler,
     private readonly startedHandler: AuctionStartedHandler,
     private readonly finishedHandler: AuctionFinishedHandler,
