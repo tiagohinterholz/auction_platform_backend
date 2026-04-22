@@ -1,17 +1,22 @@
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { AuctionReadModel } from '../read-models/auction-read.model';
 
 export class AuctionReadRepository {
-  private store = new Map<string, AuctionReadModel>();
+  constructor(
+    @InjectRepository(AuctionReadModel)
+    private readonly repo: Repository<AuctionReadModel>,
+  ) {}
 
   async save(model: AuctionReadModel): Promise<void> {
-    this.store.set(model.auctionId, model);
+    await this.repo.save(model);
   }
 
   async findById(id: string): Promise<AuctionReadModel | null> {
-    return this.store.get(id);
+    return this.repo.findOneBy({ auctionId: id });
   }
 
   async findAll(): Promise<AuctionReadModel[]> {
-    return [...this.store.values()];
+    return this.repo.find();
   }
 }

@@ -20,6 +20,9 @@ import { BidPlacedEvent } from '../bidding/domain/events/bid-placed.event';
 import { BidPlacedHandler } from './application/handlers/bid-placed.handler';
 import { AuctionProcessor } from './application/processors/auction.processor';
 import { BullModule } from '@nestjs/bullmq';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuctionPersistenceEntity } from './infrastructure/persistence/auction.persistence-entity';
+import { AuctionReadModel } from './application/read-models/auction-read.model';
 import type { EventBus } from './domain/ports/event-bus.port';
 
 @Module({
@@ -27,6 +30,7 @@ import type { EventBus } from './domain/ports/event-bus.port';
     BullModule.registerQueue({
       name: 'auction-jobs',
     }),
+    TypeOrmModule.forFeature([AuctionPersistenceEntity, AuctionReadModel]),
   ],
   controllers: [AuctionController],
   providers: [
