@@ -1,13 +1,21 @@
-import { IsArray, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import {
+  IsArray,
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Min,
+  IsISO8601,
+} from 'class-validator';
 
 export class CreateAuctionDto {
   @IsString()
   @IsNotEmpty()
-  id: string;
+  title: string;
 
   @IsString()
-  @IsNotEmpty()
-  title: string;
+  @IsOptional()
+  description?: string;
 
   @IsInt()
   @Min(0)
@@ -20,4 +28,12 @@ export class CreateAuctionDto {
   @IsArray()
   @IsString({ each: true })
   images: string[];
+
+  @IsOptional()
+  @IsISO8601()
+  startTime?: string;
+
+  @IsOptional()
+  @IsISO8601()
+  endTime?: string;
 }

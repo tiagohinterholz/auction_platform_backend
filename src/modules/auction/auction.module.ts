@@ -1,5 +1,9 @@
 import { Inject, Module, OnModuleInit } from '@nestjs/common';
-import { AUCTION_REPOSITORY, EVENT_BUS } from './domain/ports/tokens';
+import {
+  AUCTION_READ_REPOSITORY,
+  AUCTION_REPOSITORY,
+  EVENT_BUS,
+} from './domain/ports/tokens';
 import { AuctionRepository } from './infrastructure/repository/auction.repository';
 import { AuctionController } from './presentation/controllers/auction.controller';
 import { CreateAuctionUseCase } from './application/use-cases/create-auction.use-case';
@@ -50,10 +54,16 @@ import type { EventBus } from './domain/ports/event-bus.port';
 
     AuctionReadRepository,
     {
+      provide: AUCTION_READ_REPOSITORY,
+      useClass: AuctionReadRepository,
+    },
+    AuctionRepository,
+    {
       provide: AUCTION_REPOSITORY,
       useClass: AuctionRepository,
     },
   ],
+  exports: [AUCTION_READ_REPOSITORY],
 })
 export class AuctionModule implements OnModuleInit {
   constructor(

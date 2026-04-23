@@ -14,15 +14,17 @@ export class CreateAuctionUseCase {
   ) {}
 
   async execute(input: {
-    id: string;
     title: string;
+    description?: string;
     startingPrice: number;
     minimumIncrement: number;
     images: string[];
+    startTime?: string;
+    endTime?: string;
   }): Promise<void> {
     const auction = Auction.create(input);
 
-    this.auctionRepository.save(auction);
+    await this.auctionRepository.save(auction);
 
     const events = auction.pullDomainEvents();
     await this.eventBus.publish(events);

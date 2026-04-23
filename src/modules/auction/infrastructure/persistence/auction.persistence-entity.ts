@@ -1,13 +1,16 @@
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { AuctionStatus } from '../../domain/enums/auction-status.enum';
 
 @Entity('auctions')
 export class AuctionPersistenceEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn('uuid')
   auctionId: string;
 
   @Column()
   title: string;
+
+  @Column({ nullable: true })
+  description?: string;
 
   @Column({
     type: 'enum',

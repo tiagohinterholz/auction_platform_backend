@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { AuctionStatus } from './enums/auction-status.enum';
 import { InvalidAuctionTransitionException } from './exceptions/invalid-auction-transition.exception';
 import { InvalidAuctionTimeException } from './exceptions/invalid-auction-time.exception';
@@ -11,6 +12,7 @@ import { AuctionExtendedEvent } from './events/auction-extended.event';
 type AuctionProps = {
   id: string;
   title: string;
+  description?: string;
   startingPrice: number; // cents
   minimumIncrement: number; // cents
   startTime?: string; // ISO
@@ -33,6 +35,10 @@ export class Auction {
 
   getTitle(): string {
     return this.props.title;
+  }
+
+  getDescription(): string | undefined {
+    return this.props.description;
   }
 
   getStatus(): AuctionStatus {
@@ -84,25 +90,66 @@ export class Auction {
   }
 
   static create(params: {
-    id: string;
     title: string;
+    description?: string;
     startingPrice: number;
     minimumIncrement: number;
     images: string[];
+    startTime?: string;
+    endTime?: string;
+    now?: Date;
   }): Auction {
     if (!params.title?.trim()) throw new Error('title is required');
     if (params.startingPrice < 0) throw new Error('startingPrice must be >= 0');
     if (params.minimumIncrement <= 0)
       throw new Error('minimumIncrement must be > 0');
 
-    return new Auction({
-      id: params.id,
+    const id = randomUUID();
+    const status =
+      params.startTime && params.endTime
+        ? AuctionStatus.SCHEDULED
+        : AuctionStatus.CREATED;
+
+    const auction = new Auction({
+      id,
       title: params.title.trim(),
+      description: params.description,
       startingPrice: params.startingPrice,
       minimumIncrement: params.minimumIncrement,
-      status: AuctionStatus.CREATED,
+      status,
       images: params.images,
+      startTime: params.startTime,
+      endTime: params.endTime,
     });
+
+    if (
+      status === AuctionStatus.SCHEDULED &&
+      params.startTime &&
+      params.endTime
+    ) {
+      const start = new Date(params.startTime);
+      const end = new Date(params.endTime);
+      const now = params.now || new Date();
+
+      if (start >= end)
+        throw new InvalidAuctionTimeException('startTime must be < endTime');
+      if (start <= now)
+        throw new InvalidAuctionTimeException(
+          'startTime must be in the future',
+        );
+
+      auction.domainEvents.push(
+        new AuctionScheduledEvent({
+          auctionId: id,
+          startTime: params.startTime,
+          endTime: params.endTime,
+          startingPrice: params.startingPrice,
+          minimumIncrement: params.minimumIncrement,
+        }),
+      );
+    }
+
+    return auction;
   }
 
   static restore(props: AuctionProps): Auction {
