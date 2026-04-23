@@ -1,10 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Bidding } from '../../domain/bidding.aggregate';
 import { BiddingRepositoryPort } from '../../domain/ports/bidding-repository-port';
 import { BiddingMapper } from '../persistence/bidding.mapper';
 import { BiddingPersistenceEntity } from '../persistence/bidding.persistence-entity';
 
+@Injectable()
 export class BiddingRepository implements BiddingRepositoryPort {
   constructor(
     @InjectRepository(BiddingPersistenceEntity)

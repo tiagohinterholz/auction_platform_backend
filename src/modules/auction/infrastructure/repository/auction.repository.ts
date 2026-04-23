@@ -1,10 +1,12 @@
 import { InjectRepository } from '@nestjs/typeorm';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Auction } from '../../domain/auction.aggregate';
 import { AuctionRepositoryPort } from '../../domain/ports/auction-repository.port';
 import { AuctionMapper } from '../persistence/auction.mapper';
 import { AuctionPersistenceEntity } from '../persistence/auction.persistence-entity';
 
+@Injectable()
 export class AuctionRepository implements AuctionRepositoryPort {
   constructor(
     @InjectRepository(AuctionPersistenceEntity)
