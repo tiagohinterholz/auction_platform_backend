@@ -7,14 +7,14 @@ import { Injectable } from '@nestjs/common';
 export class AuctionFinishedHandler {
   constructor(private readonly readRepository: AuctionReadRepository) {}
 
-  handle(event: AuctionFinishedEvent): void {
-    const current = this.readRepository.findById(event.payload.auctionId);
+  async handle(event: AuctionFinishedEvent): Promise<void> {
+    const current = await this.readRepository.findById(event.payload.auctionId);
 
     if (!current) {
       return;
     }
 
-    this.readRepository.save({
+    await this.readRepository.save({
       ...current,
       status: AuctionStatus.FINISHED,
       endTime: event.payload.finishedAt,
