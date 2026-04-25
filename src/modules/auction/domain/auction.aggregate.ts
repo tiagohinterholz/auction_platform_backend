@@ -8,6 +8,7 @@ import { AuctionStartedEvent } from './events/auction-started.event';
 import { AuctionFinishedEvent } from './events/auction-finished.event';
 import { AuctionCancelledEvent } from './events/auction-cancelled.event';
 import { AuctionExtendedEvent } from './events/auction-extended.event';
+import { AuctionCreatedEvent } from './events/auction-created.event';
 
 type AuctionProps = {
   id: string;
@@ -95,9 +96,6 @@ export class Auction {
     startingPrice: number;
     minimumIncrement: number;
     images: string[];
-    startTime?: string;
-    endTime?: string;
-    now?: Date;
   }): Auction {
     if (!params.title?.trim()) throw new Error('title is required');
     if (params.startingPrice < 0) throw new Error('startingPrice must be >= 0');
@@ -105,10 +103,7 @@ export class Auction {
       throw new Error('minimumIncrement must be > 0');
 
     const id = randomUUID();
-    const status =
-      params.startTime && params.endTime
-        ? AuctionStatus.SCHEDULED
-        : AuctionStatus.CREATED;
+    const status = AuctionStatus.CREATED;
 
     const auction = new Auction({
       id,
@@ -118,36 +113,15 @@ export class Auction {
       minimumIncrement: params.minimumIncrement,
       status,
       images: params.images,
-      startTime: params.startTime,
-      endTime: params.endTime,
     });
 
-    if (
-      status === AuctionStatus.SCHEDULED &&
-      params.startTime &&
-      params.endTime
-    ) {
-      const start = new Date(params.startTime);
-      const end = new Date(params.endTime);
-      const now = params.now || new Date();
-
-      if (start >= end)
-        throw new InvalidAuctionTimeException('startTime must be < endTime');
-      if (start <= now)
-        throw new InvalidAuctionTimeException(
-          'startTime must be in the future',
-        );
-
-      auction.domainEvents.push(
-        new AuctionScheduledEvent({
-          auctionId: id,
-          startTime: params.startTime,
-          endTime: params.endTime,
-          startingPrice: params.startingPrice,
-          minimumIncrement: params.minimumIncrement,
-        }),
-      );
-    }
+    auction.domainEvents.push(
+      new AuctionCreatedEvent({
+        auctionId: id,
+        startingPrice: params.startingPrice,
+        minimumIncrement: params.minimumIncrement,
+      }),
+    );
 
     return auction;
   }

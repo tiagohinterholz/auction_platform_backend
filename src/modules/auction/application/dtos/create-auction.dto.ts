@@ -5,7 +5,6 @@ import {
   IsOptional,
   IsString,
   Min,
-  IsISO8601,
 } from 'class-validator';
 
 export class CreateAuctionDto {
@@ -28,12 +27,4 @@ export class CreateAuctionDto {
   @IsArray()
   @IsString({ each: true })
   images: string[];
-
-  @IsOptional()
-  @IsISO8601()
-  startTime?: string;
-
-  @IsOptional()
-  @IsISO8601()
-  endTime?: string;
 }

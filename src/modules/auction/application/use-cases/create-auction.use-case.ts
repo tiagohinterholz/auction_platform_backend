@@ -19,8 +19,6 @@ export class CreateAuctionUseCase {
     startingPrice: number;
     minimumIncrement: number;
     images: string[];
-    startTime?: string;
-    endTime?: string;
   }): Promise<void> {
     const auction = Auction.create(input);
 

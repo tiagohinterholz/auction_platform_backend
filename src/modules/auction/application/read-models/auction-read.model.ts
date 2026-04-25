@@ -6,6 +6,9 @@ export class AuctionReadModel {
   @PrimaryColumn()
   auctionId: string;
 
+  @Column()
+  description: string;
+
   @Column({
     type: 'enum',
     enum: AuctionStatus,
