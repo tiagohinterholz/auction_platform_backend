@@ -2,7 +2,7 @@
 import { Auction } from '../../auction.aggregate';
 
 export class AuctionFixture {
-  static draft(
+  static created(
     overrides?: Partial<{
       id: string;
       title: string;
@@ -21,7 +21,7 @@ export class AuctionFixture {
   }
 
   static scheduled() {
-    const auction = this.draft();
+    const auction = this.created();
 
     auction.schedule({
       startTime: new Date(Date.now() + 60_000).toISOString(),

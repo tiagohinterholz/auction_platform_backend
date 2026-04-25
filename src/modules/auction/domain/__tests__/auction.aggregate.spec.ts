@@ -8,14 +8,15 @@ import { Auction } from '../auction.aggregate';
 
 describe('AuctionAggregate', () => {
   it('should create auction in CREATED status', () => {
-    const auction = AuctionFixture.draft();
+    const auction = AuctionFixture.created();
 
     expect(auction.getStatus()).toBe(AuctionStatus.CREATED);
     expect(auction.getStartingPrice()).toBe(10000);
   });
 
   it('should schedule auction and emit AuctionScheduledEvent', () => {
-    const auction = AuctionFixture.draft();
+    const auction = AuctionFixture.created();
+    auction.pullDomainEvents();
 
     auction.schedule({
       startTime: new Date(Date.now() + 60_000).toISOString(),
