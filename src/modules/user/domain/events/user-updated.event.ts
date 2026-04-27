@@ -18,13 +18,7 @@ export class UserUpdated implements DomainEvent<
     cpf: string;
   };
 
-  constructor(props: {
-    id: string;
-    name: string;
-    email: string;
-    cpf: string;
-    credits: 0;
-  }) {
+  constructor(props: { id: string; name: string; email: string; cpf: string }) {
     this.occurredAt = new Date().toISOString();
     this.payload = props;
   }

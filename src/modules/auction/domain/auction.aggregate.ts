@@ -118,6 +118,7 @@ export class Auction {
     auction.domainEvents.push(
       new AuctionCreatedEvent({
         auctionId: id,
+        description: params.description || '',
         startingPrice: params.startingPrice,
         minimumIncrement: params.minimumIncrement,
       }),

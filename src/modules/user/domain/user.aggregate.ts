@@ -1,15 +1,17 @@
+import { randomUUID } from 'crypto';
 import { DomainEvent } from './events/domain-event';
 import { UserCreated } from './events/user-created.event';
 import { UserUpdated } from './events/user-updated.event';
 import { UserDeleted } from './events/user-deleted.event';
-import { CreditsAdded } from './events/credits-added.event';
-import { CreditsRemoved } from './events/credits-removed.event';
+import { UserRole } from './enums/user-role.enum';
+
 export type UserProps = {
   id: string;
   name: string;
   email: string;
   cpf: string;
-  credits: number;
+  passwordHash: string;
+  role: UserRole;
 };
 
 export class User {
@@ -17,22 +19,27 @@ export class User {
   private constructor(private props: UserProps) {}
 
   static create({
-    id,
     name,
     email,
     cpf,
+    passwordHash,
+    role,
   }: {
-    id: string;
     name: string;
     email: string;
     cpf: string;
+    passwordHash: string;
+    role: UserRole;
   }): User {
+    const id = randomUUID();
+
     const user = new User({
       id,
       name,
       email,
       cpf,
-      credits: 0,
+      passwordHash,
+      role,
     });
 
     user.domainEvents.push(
@@ -41,10 +48,31 @@ export class User {
         name: user.getName(),
         email: user.getEmail(),
         cpf: user.getCpf(),
-        credits: 0,
       }),
     );
     return user;
+  }
+
+  update(props: Partial<Omit<UserProps, 'id' | 'cpf'>>): void {
+    if (props.name) this.props.name = props.name;
+    if (props.email) this.props.email = props.email;
+
+    this.domainEvents.push(
+      new UserUpdated({
+        id: this.props.id,
+        name: this.props.name,
+        email: this.props.email,
+        cpf: this.props.cpf,
+      }),
+    );
+  }
+
+  delete(): void {
+    this.domainEvents.push(
+      new UserDeleted({
+        id: this.props.id,
+      }),
+    );
   }
 
   static restore(props: UserProps): User {
@@ -63,68 +91,21 @@ export class User {
     return this.props.email;
   }
 
-  getCredits(): number {
-    return this.props.credits;
-  }
-
   getCpf(): string {
     return this.props.cpf;
+  }
+
+  getPasswordHash(): string {
+    return this.props.passwordHash;
+  }
+
+  getRole(): UserRole {
+    return this.props.role;
   }
 
   pullDomainEvents(): DomainEvent[] {
     const events = [...this.domainEvents];
     this.domainEvents = [];
     return events;
-  }
-
-  update(props: Partial<Omit<UserProps, 'id' | 'credits' | 'cpf'>>): void {
-    if (props.name) this.props.name = props.name;
-    if (props.email) this.props.email = props.email;
-
-    this.domainEvents.push(
-      new UserUpdated({
-        id: this.props.id,
-        name: this.props.name,
-        email: this.props.email,
-        cpf: this.props.cpf,
-        credits: 0,
-      }),
-    );
-  }
-
-  delete(): void {
-    this.domainEvents.push(
-      new UserDeleted({
-        id: this.props.id,
-        name: this.props.name,
-        email: this.props.email,
-        cpf: this.props.cpf,
-        credits: 0,
-      }),
-    );
-  }
-
-  addCredits(amount: number): void {
-    if (amount <= 0) throw new Error('Amount must be positive');
-    this.props.credits += amount;
-    this.domainEvents.push(
-      new CreditsAdded({
-        userId: this.props.id,
-        amount,
-        newTotal: this.props.credits,
-      }),
-    );
-  }
-  removeCredits(amount: number): void {
-    if (amount <= 0) throw new Error('Amount must be positive');
-    if (this.props.credits < amount) throw new Error('Insufficient credits');
-    this.props.credits -= amount;
-    this.domainEvents.push(
-      new CreditsRemoved({
-        userId: this.props.id,
-        amount,
-        newTotal: this.props.credits,
-      }),
-    );
   }
 }
