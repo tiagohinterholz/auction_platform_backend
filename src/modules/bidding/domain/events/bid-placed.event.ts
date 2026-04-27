@@ -5,6 +5,7 @@ export class BidPlacedEvent implements DomainEvent<
   {
     bidId: string;
     auctionId: string;
+    userId: string;
     bidderId: string;
     amount: number;
   }
@@ -14,6 +15,7 @@ export class BidPlacedEvent implements DomainEvent<
   readonly payload: {
     bidId: string;
     auctionId: string;
+    userId: string;
     bidderId: string;
     amount: number;
   };
@@ -21,6 +23,7 @@ export class BidPlacedEvent implements DomainEvent<
   constructor(props: {
     bidId: string;
     auctionId: string;
+    userId: string;
     bidderId: string;
     amount: number;
   }) {

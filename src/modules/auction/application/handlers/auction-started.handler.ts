@@ -10,13 +10,17 @@ export class AuctionStartedHandler {
   async handle(event: AuctionStartedEvent): Promise<void> {
     const current = await this.readRepository.findById(event.payload.auctionId);
 
+    if (!current) {
+      console.error(
+        `Auction ${event.payload.auctionId} not found in read model`,
+      );
+      return;
+    }
+
     await this.readRepository.save({
-      ...(current ?? {}),
-      auctionId: event.payload.auctionId,
+      ...current,
       status: AuctionStatus.ACTIVE,
-      startingPrice: event.payload.startingPrice,
       highestBid: event.payload.startingPrice,
-      minimumIncrement: event.payload.minimumIncrement,
     });
   }
 }

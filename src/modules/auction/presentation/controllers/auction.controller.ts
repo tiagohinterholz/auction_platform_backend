@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 
 import { CreateAuctionDto } from '../../application/dtos/create-auction.dto';
@@ -51,8 +52,10 @@ export class AuctionController {
   }
 
   @Post()
-  async createAuction(@Body() dto: CreateAuctionDto) {
-    await this.createAuctionUseCase.execute(dto);
+  async createAuction(@Body() dto: CreateAuctionDto, @Req() req: any) {
+    const userId = req.user.id || 'user-test';
+
+    await this.createAuctionUseCase.execute({ userId, ...dto });
 
     return { status: 'created' };
   }

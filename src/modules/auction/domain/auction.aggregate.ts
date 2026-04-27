@@ -125,10 +125,12 @@ export class Auction {
     auction.domainEvents.push(
       new AuctionCreatedEvent({
         auctionId: id,
+        title: params.title,
         userId: params.userId,
         description: params.description || '',
         startingPrice: params.startingPrice,
         minimumIncrement: params.minimumIncrement,
+        images: params.images,
       }),
     );
 
@@ -184,6 +186,7 @@ export class Auction {
     this.domainEvents.push(
       new AuctionStartedEvent({
         auctionId: this.props.id,
+        userId: this.props.userId,
         startingPrice: this.props.startingPrice,
         minimumIncrement: this.props.minimumIncrement,
         startedAt: params.now.toISOString(),

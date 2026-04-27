@@ -5,6 +5,7 @@ import { BidPlacedEvent } from './events/bid-placed.event';
 type BiddingProps = {
   id: string;
   auctionId: string;
+  userId: string;
   currentPrice: number;
   minimumIncrement: number;
   lastBidderId?: string;
@@ -23,12 +24,14 @@ export class Bidding {
   static open(params: {
     id: string;
     auctionId: string;
+    userId: string;
     startingPrice: number;
     minimumIncrement: number;
   }): Bidding {
     return new Bidding({
       id: params.id,
       auctionId: params.auctionId,
+      userId: params.userId,
       currentPrice: params.startingPrice,
       minimumIncrement: params.minimumIncrement,
     });
@@ -59,6 +62,7 @@ export class Bidding {
       new BidPlacedEvent({
         bidId: this.props.id,
         auctionId: this.props.auctionId,
+        userId: this.props.userId,
         bidderId: params.bidderId,
         amount: params.amount,
       }),
@@ -77,6 +81,10 @@ export class Bidding {
 
   getAuctionId() {
     return this.props.auctionId;
+  }
+
+  getUserId() {
+    return this.props.userId;
   }
 
   getCurrentPrice() {
