@@ -4,14 +4,14 @@ import { Auction } from '../../auction.aggregate';
 export class AuctionFixture {
   static created(
     overrides?: Partial<{
-      id: string;
+      userId: string;
       title: string;
       startingPrice: number;
       minimumIncrement: number;
     }>,
   ) {
     return Auction.create({
-      id: 'auction-1',
+      userId: 'user-1',
       title: 'MacBook Pro',
       startingPrice: 10000,
       minimumIncrement: 1000,

@@ -14,6 +14,7 @@ export class CreateAuctionUseCase {
   ) {}
 
   async execute(input: {
+    userId: string;
     title: string;
     description?: string;
     startingPrice: number;

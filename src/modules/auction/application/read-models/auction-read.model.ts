@@ -7,6 +7,12 @@ export class AuctionReadModel {
   auctionId: string;
 
   @Column()
+  userId: string;
+
+  @Column()
+  title: string;
+
+  @Column()
   description: string;
 
   @Column({

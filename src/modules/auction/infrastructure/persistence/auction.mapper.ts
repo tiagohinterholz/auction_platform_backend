@@ -4,6 +4,7 @@ import { AuctionPersistenceEntity } from './auction.persistence-entity';
 export class AuctionMapper {
   static toPersistence(auction: Auction): AuctionPersistenceEntity {
     const entity = new AuctionPersistenceEntity();
+    entity.userId = auction.getUserId();
     entity.auctionId = auction.getId();
     entity.title = auction.getTitle();
     entity.description = auction.getDescription();
@@ -19,6 +20,7 @@ export class AuctionMapper {
   static toDomain(entity: AuctionPersistenceEntity): Auction {
     return Auction.restore({
       id: entity.auctionId,
+      userId: entity.userId,
       title: entity.title,
       description: entity.description,
       startingPrice: entity.startingPrice,

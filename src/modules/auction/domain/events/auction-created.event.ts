@@ -4,6 +4,8 @@ export class AuctionCreatedEvent implements DomainEvent<
   'AuctionCreated',
   {
     auctionId: string;
+    userId: string;
+    title: string;
     description: string;
     startingPrice: number;
     minimumIncrement: number;
@@ -14,6 +16,8 @@ export class AuctionCreatedEvent implements DomainEvent<
   readonly occurredAt: string;
   readonly payload: {
     auctionId: string;
+    userId: string;
+    title: string;
     description: string;
     startingPrice: number;
     minimumIncrement: number;
@@ -22,6 +26,8 @@ export class AuctionCreatedEvent implements DomainEvent<
 
   constructor(props: {
     auctionId: string;
+    userId: string;
+    title: string;
     description: string;
     startingPrice: number;
     minimumIncrement: number;

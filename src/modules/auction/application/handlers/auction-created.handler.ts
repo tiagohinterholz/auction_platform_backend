@@ -10,6 +10,8 @@ export class AuctionCreatedHandler {
   async handle(event: AuctionCreatedEvent): Promise<void> {
     await this.readRepository.save({
       auctionId: event.payload.auctionId,
+      userId: event.payload.userId,
+      title: event.payload.title,
       description: event.payload.description,
       startingPrice: event.payload.startingPrice,
       minimumIncrement: event.payload.minimumIncrement,

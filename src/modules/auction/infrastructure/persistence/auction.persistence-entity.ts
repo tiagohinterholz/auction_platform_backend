@@ -7,6 +7,9 @@ export class AuctionPersistenceEntity {
   auctionId: string;
 
   @Column()
+  userId: string;
+
+  @Column()
   title: string;
 
   @Column({ nullable: true })

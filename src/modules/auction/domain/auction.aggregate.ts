@@ -12,6 +12,7 @@ import { AuctionCreatedEvent } from './events/auction-created.event';
 
 type AuctionProps = {
   id: string;
+  userId: string;
   title: string;
   description?: string;
   startingPrice: number; // cents
@@ -32,6 +33,10 @@ export class Auction {
 
   getId(): string {
     return this.props.id;
+  }
+
+  getUserId(): string {
+    return this.props.userId;
   }
 
   getTitle(): string {
@@ -91,6 +96,7 @@ export class Auction {
   }
 
   static create(params: {
+    userId: string;
     title: string;
     description?: string;
     startingPrice: number;
@@ -107,6 +113,7 @@ export class Auction {
 
     const auction = new Auction({
       id,
+      userId: params.userId,
       title: params.title.trim(),
       description: params.description,
       startingPrice: params.startingPrice,
@@ -118,6 +125,7 @@ export class Auction {
     auction.domainEvents.push(
       new AuctionCreatedEvent({
         auctionId: id,
+        userId: params.userId,
         description: params.description || '',
         startingPrice: params.startingPrice,
         minimumIncrement: params.minimumIncrement,
