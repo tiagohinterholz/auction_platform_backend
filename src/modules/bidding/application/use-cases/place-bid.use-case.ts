@@ -30,7 +30,7 @@ export class PlaceBidUseCase {
   async execute(input: {
     bidId: string;
     auctionId: string;
-    bidderId: string;
+    userId: string;
     amount: number;
     now: Date;
   }) {
@@ -65,7 +65,7 @@ export class PlaceBidUseCase {
         });
 
       bidding.placeBid({
-        bidderId: input.bidderId,
+        bidderId: input.userId,
         amount: input.amount,
         now: input.now,
       });

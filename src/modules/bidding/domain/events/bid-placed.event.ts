@@ -6,7 +6,6 @@ export class BidPlacedEvent implements DomainEvent<
     bidId: string;
     auctionId: string;
     userId: string;
-    bidderId: string;
     amount: number;
   }
 > {
@@ -16,7 +15,6 @@ export class BidPlacedEvent implements DomainEvent<
     bidId: string;
     auctionId: string;
     userId: string;
-    bidderId: string;
     amount: number;
   };
 
@@ -24,7 +22,6 @@ export class BidPlacedEvent implements DomainEvent<
     bidId: string;
     auctionId: string;
     userId: string;
-    bidderId: string;
     amount: number;
   }) {
     this.occurredAt = new Date().toISOString();

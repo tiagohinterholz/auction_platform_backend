@@ -16,7 +16,7 @@ export class BiddingMapper {
 
   static toDomain(entity: BiddingPersistenceEntity): Bidding {
     return Bidding.restore({
-      id: entity.auctionId,
+      id: entity.id,
       auctionId: entity.auctionId,
       currentPrice: entity.currentPrice,
       minimumIncrement: entity.minimumIncrement,

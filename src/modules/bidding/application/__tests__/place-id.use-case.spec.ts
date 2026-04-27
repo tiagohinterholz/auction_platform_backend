@@ -58,6 +58,9 @@ describe('PlaceBidUseCase', () => {
   it('should throw error when auction is not ACTIVE', async () => {
     await auctionReadRepository.save({
       auctionId: 'auction-1',
+      userId: 'seller-1',
+      title: 'Auction Test',
+      description: 'Description Test',
       status: AuctionStatus.FINISHED,
       startingPrice: 10000,
       minimumIncrement: 2000,
@@ -68,7 +71,7 @@ describe('PlaceBidUseCase', () => {
       useCase.execute({
         bidId: 'bid-1',
         auctionId: 'auction-1',
-        bidderId: 'user-1',
+        userId: 'user-1',
         amount: 15000,
         now: new Date(),
       }),
@@ -78,6 +81,9 @@ describe('PlaceBidUseCase', () => {
   it('should place bid successfully when auction is ACTIVE', async () => {
     await auctionReadRepository.save({
       auctionId: 'auction-1',
+      userId: 'seller-1',
+      title: 'Auction Test',
+      description: 'Description Test',
       status: AuctionStatus.ACTIVE,
       startingPrice: 10000,
       minimumIncrement: 2000,
@@ -87,7 +93,7 @@ describe('PlaceBidUseCase', () => {
     await useCase.execute({
       bidId: 'bid-1',
       auctionId: 'auction-1',
-      bidderId: 'user-1',
+      userId: 'user-1',
       amount: 15000,
       now: new Date(),
     });

@@ -8,15 +8,21 @@ import { BiddingPersistenceEntity } from './infrastructure/persistence/bidding.p
 
 import { AuctionModule } from '../auction/auction.module';
 
+import { BidReadModel } from './application/read-models/bid-read.model';
+import { BidPlacedHandler } from './application/handlers/bid-placed.handler';
+import { AuctionStartedHandler } from './application/handlers/auction-started-handler';
+
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BiddingPersistenceEntity]),
+    TypeOrmModule.forFeature([BiddingPersistenceEntity, BidReadModel]),
     AuctionModule,
   ],
   controllers: [BiddingController],
   providers: [
     PlaceBidUseCase,
     BiddingRepository,
+    BidPlacedHandler,
+    AuctionStartedHandler,
     {
       provide: BIDDING_REPOSITORY,
       useClass: BiddingRepository,

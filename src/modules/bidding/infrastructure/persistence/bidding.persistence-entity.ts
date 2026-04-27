@@ -8,9 +8,6 @@ export class BiddingPersistenceEntity {
   @Column()
   auctionId: string;
 
-  @Column()
-  userId: string;
-
   @Column({
     type: 'bigint',
     transformer: { to: (v) => v, from: (v) => parseInt(v) },
