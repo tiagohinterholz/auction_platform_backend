@@ -38,16 +38,22 @@ export class AuctionScheduledHandler {
       },
     );
 
+    if (!current) {
+      console.warn(
+        `[AuctionScheduledHandler] Auction ${event.payload.auctionId} not found in read model.`,
+      );
+      return;
+    }
+
     await this.readRepository.save({
-      ...(current ?? {}),
-      auctionId: event.payload.auctionId,
+      ...current,
       status: AuctionStatus.SCHEDULED,
       startTime: event.payload.startTime,
       endTime: event.payload.endTime,
       startingPrice: event.payload.startingPrice,
       highestBid: event.payload.startingPrice,
       minimumIncrement: event.payload.minimumIncrement,
-      images: event.payload.images ?? [],
+      images: event.payload.images,
     });
   }
 }

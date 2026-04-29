@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepositoryPort } from '../../domain/ports/user-repository.port';
+import { IUserRepository } from '../../domain/ports/user-repository.port';
 import { User } from '../../domain/user.aggregate';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserPersistenceEntity } from '../persistence/user.persistence-entity';
@@ -7,7 +7,7 @@ import { Repository } from 'typeorm';
 import { UserMapper } from '../persistence/user.mapper';
 
 @Injectable()
-export class UserRepository implements UserRepositoryPort {
+export class UserRepository implements IUserRepository {
   constructor(
     @InjectRepository(UserPersistenceEntity)
     private readonly userRepository: Repository<UserPersistenceEntity>,
