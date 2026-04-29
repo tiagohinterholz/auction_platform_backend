@@ -7,7 +7,9 @@ import {
   Patch,
   Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 
 import { CreateAuctionDto } from '../../application/dtos/create-auction.dto';
 import { ScheduleAuctionDto } from '../../application/dtos/schedule-auction.dto';
@@ -52,8 +54,9 @@ export class AuctionController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createAuction(@Body() dto: CreateAuctionDto, @Req() req: any) {
-    const userId = req.user?.id || 'user-test';
+    const userId = req.user.sub;
 
     await this.createAuctionUseCase.execute({ userId, ...dto });
 

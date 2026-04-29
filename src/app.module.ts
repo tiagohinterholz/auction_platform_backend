@@ -11,6 +11,7 @@ import { EventsModule } from './shared/events/events.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
+import { UserModule } from './modules/user/user.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -22,6 +23,7 @@ import { ConfigService } from '@nestjs/config';
     AuthModule,
     AuctionModule,
     BiddingModule,
+    UserModule,
     RedisModule,
     EventsModule,
     NotificationsModule,

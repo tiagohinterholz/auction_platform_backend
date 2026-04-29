@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -30,6 +30,7 @@ import { RefreshTokenUseCase } from './application/use-cases/refresh.use-case';
 
 import { AuthController } from './presentation/controllers/auth.controller';
 
+@Global()
 @Module({
   imports: [
     UserModule,
