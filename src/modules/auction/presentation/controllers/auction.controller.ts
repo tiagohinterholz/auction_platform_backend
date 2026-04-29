@@ -53,7 +53,7 @@ export class AuctionController {
 
   @Post()
   async createAuction(@Body() dto: CreateAuctionDto, @Req() req: any) {
-    const userId = req.user.id || 'user-test';
+    const userId = req.user?.id || 'user-test';
 
     await this.createAuctionUseCase.execute({ userId, ...dto });
 
