@@ -11,10 +11,14 @@ import { ScheduleAuctionUseCase } from './application/use-cases/schedule-auction
 import { CancelAuctionUseCase } from './application/use-cases/cancel-auction.use-case';
 import { FinishAuctionUseCase } from './application/use-cases/finish-auction.use-case';
 import { StartAuctionUseCase } from './application/use-cases/start-auction.use-case';
+
+import { AuctionCreatedHandler } from './application/handlers/auction-created.handler';
 import { AuctionStartedHandler } from './application/handlers/auction-started.handler';
 import { AuctionScheduledHandler } from './application/handlers/auction-scheduled.handler';
 import { AuctionFinishedHandler } from './application/handlers/auction-finished.handler';
 import { AuctionCancelledHandler } from './application/handlers/auction-cancelled.handler';
+
+import { AuctionCreatedEvent } from './domain/events/auction-created.event';
 import { AuctionCancelledEvent } from './domain/events/auction-cancelled.event';
 import { AuctionFinishedEvent } from './domain/events/auction-finished.event';
 import { AuctionStartedEvent } from './domain/events/auction-started.event';
@@ -46,6 +50,7 @@ import type { EventBus } from './domain/ports/event-bus.port';
 
     AuctionProcessor,
 
+    AuctionCreatedHandler,
     AuctionStartedHandler,
     AuctionScheduledHandler,
     AuctionFinishedHandler,
@@ -69,6 +74,7 @@ export class AuctionModule implements OnModuleInit {
   constructor(
     @Inject(EVENT_BUS)
     private readonly eventBus: EventBus,
+    private readonly createdHandler: AuctionCreatedHandler,
     private readonly scheduledHandler: AuctionScheduledHandler,
     private readonly startedHandler: AuctionStartedHandler,
     private readonly finishedHandler: AuctionFinishedHandler,
@@ -76,6 +82,11 @@ export class AuctionModule implements OnModuleInit {
     private readonly bidPlacedHandler: BidPlacedHandler,
   ) {}
   onModuleInit() {
+    this.eventBus.subscribe(
+      AuctionCreatedEvent.name,
+      async (event: AuctionCreatedEvent) => this.createdHandler.handle(event),
+    );
+
     this.eventBus.subscribe(
       AuctionScheduledEvent.name,
       async (event: AuctionScheduledEvent) =>

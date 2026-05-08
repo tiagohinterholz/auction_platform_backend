@@ -64,6 +64,7 @@ export class AuctionController {
   }
 
   @Patch(':id/schedule')
+  @UseGuards(JwtAuthGuard)
   async scheduleAuction(
     @Param('id') auctionId: string,
     @Body() dto: ScheduleAuctionDto,
@@ -79,6 +80,7 @@ export class AuctionController {
   }
 
   @Patch(':id/cancel')
+  @UseGuards(JwtAuthGuard)
   async cancelAuction(
     @Param('id') auctionId: string,
     @Body() dto: CancelAuctionDto,
@@ -93,6 +95,7 @@ export class AuctionController {
   }
 
   @Patch(':id/finish')
+  @UseGuards(JwtAuthGuard)
   async finishAuction(@Param('id') auctionId: string) {
     await this.finishAuctionUseCase.execute({
       auctionId,
