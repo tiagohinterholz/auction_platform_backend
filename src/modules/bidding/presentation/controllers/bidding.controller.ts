@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { PlaceBidUseCase } from '../../application/use-cases/place-bid.use-case';
 import { CreateBidDto } from '../../application/dtos/create-bid.dto';
+import { JwtAuthGuard } from '../../../auth/presentation/guards/jwt-auth.guard';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -26,12 +35,13 @@ export class BiddingController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async createBid(
     @Param('auctionId') auctionId: string,
     @Body() dto: CreateBidDto,
     @Req() req: any,
   ) {
-    const userId = req.user?.id || 'mock-user';
+    const userId = req.user.sub;
 
     await this.placeBidUseCase.execute({
       bidId: randomUUID(),
@@ -44,3 +54,4 @@ export class BiddingController {
     return { status: 'created' };
   }
 }
+

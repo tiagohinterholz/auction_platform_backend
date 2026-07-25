@@ -19,4 +19,9 @@ export class AuctionReadRepository {
   async findAll(): Promise<AuctionReadModel[]> {
     return this.repo.find();
   }
+
+  async findByUserId(userId: string): Promise<AuctionReadModel[]> {
+    return this.repo.findBy({ userId });
+  }
 }
+

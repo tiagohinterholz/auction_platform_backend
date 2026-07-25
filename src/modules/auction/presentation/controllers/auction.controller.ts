@@ -42,6 +42,13 @@ export class AuctionController {
     return auctions;
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMyAuctions(@Req() req: any) {
+    const userId = req.user.sub;
+    return this.auctionReadRepository.findByUserId(userId);
+  }
+
   @Get(':id')
   async getReadModel(@Param('id') id: string) {
     const auction = await this.auctionReadRepository.findById(id);
@@ -76,7 +83,9 @@ export class AuctionController {
       now: new Date(),
     });
 
-    return { status: 'scheduled' };
+    const auction = await this.auctionReadRepository.findById(auctionId);
+    if (!auction) throw new NotFoundException('Auction not found');
+    return auction;
   }
 
   @Patch(':id/cancel')
@@ -91,7 +100,9 @@ export class AuctionController {
       now: new Date(),
     });
 
-    return { status: 'cancelled' };
+    const auction = await this.auctionReadRepository.findById(auctionId);
+    if (!auction) throw new NotFoundException('Auction not found');
+    return auction;
   }
 
   @Patch(':id/finish')
@@ -102,6 +113,9 @@ export class AuctionController {
       now: new Date(),
     });
 
-    return { status: 'finished' };
+    const auction = await this.auctionReadRepository.findById(auctionId);
+    if (!auction) throw new NotFoundException('Auction not found');
+    return auction;
   }
 }
+
