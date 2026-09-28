@@ -10,6 +10,7 @@ export class UserMapper {
     entity.passwordHash = user.getPasswordHash();
     entity.cpf = user.getCpf();
     entity.role = user.getRole();
+    entity.isActive = user.getisActive();
     return entity;
   }
 
@@ -21,6 +22,7 @@ export class UserMapper {
       passwordHash: entity.passwordHash,
       cpf: entity.cpf,
       role: entity.role,
+      isActive: entity.isActive,
     });
   }
 }

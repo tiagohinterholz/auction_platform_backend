@@ -9,7 +9,7 @@ export class UserCreated implements DomainEvent<
     cpf: string;
   }
 > {
-  readonly type = 'UserCreated' as const;
+  readonly name = 'UserCreated' as const;
   readonly occurredAt: string;
   readonly payload: {
     id: string;
@@ -22,5 +22,4 @@ export class UserCreated implements DomainEvent<
     this.occurredAt = new Date().toISOString();
     this.payload = props;
   }
-  name: 'UserCreated';
 }

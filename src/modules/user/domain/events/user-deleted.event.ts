@@ -6,7 +6,7 @@ export class UserDeleted implements DomainEvent<
     id: string;
   }
 > {
-  readonly type = 'UserDeleted' as const;
+  readonly name = 'UserDeleted' as const;
   readonly occurredAt: string;
   readonly payload: {
     id: string;
@@ -16,5 +16,4 @@ export class UserDeleted implements DomainEvent<
     this.occurredAt = new Date().toISOString();
     this.payload = props;
   }
-  name: 'UserDeleted';
 }

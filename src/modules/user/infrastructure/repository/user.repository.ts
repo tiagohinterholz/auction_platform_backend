@@ -28,6 +28,12 @@ export class UserRepository implements IUserRepository {
     if (!entity) return null;
     return UserMapper.toDomain(entity);
   }
+
+  async findByCPF(cpf: string): Promise<User | null> {
+    const entity = await this.userRepository.findOneBy({ cpf });
+    if (!entity) return null;
+    return UserMapper.toDomain(entity);
+  }
   async delete(id: string): Promise<void> {
     await this.userRepository.delete({ id });
   }

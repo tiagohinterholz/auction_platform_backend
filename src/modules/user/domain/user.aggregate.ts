@@ -11,6 +11,7 @@ export type UserProps = {
   email: string;
   cpf: string;
   passwordHash: string;
+  isActive: boolean;
   role: UserRole;
 };
 
@@ -31,7 +32,12 @@ export class User {
     passwordHash: string;
     role: UserRole;
   }): User {
+    if (!name.trim()) throw new Error('name is required');
+    if (!email.includes('@')) throw new Error('invalid e-mail');
+    if (!cpf.trim() || cpf.length != 11) throw new Error('CPF Invalido');
+
     const id = randomUUID();
+    const isActive = true;
 
     const user = new User({
       id,
@@ -40,6 +46,7 @@ export class User {
       cpf,
       passwordHash,
       role,
+      isActive,
     });
 
     user.domainEvents.push(
@@ -55,14 +62,16 @@ export class User {
 
   update(props: Partial<Omit<UserProps, 'id' | 'cpf'>>): void {
     if (props.name) this.props.name = props.name;
-    if (props.email) this.props.email = props.email;
+    if (props.email !== undefined) {
+      if (!props.email.includes('@')) throw new Error('invalid e-mail');
+      this.props.email = props.email;
+    }
 
     this.domainEvents.push(
       new UserUpdated({
         id: this.props.id,
         name: this.props.name,
         email: this.props.email,
-        cpf: this.props.cpf,
       }),
     );
   }
@@ -101,6 +110,10 @@ export class User {
 
   getRole(): UserRole {
     return this.props.role;
+  }
+
+  getisActive(): boolean {
+    return this.props.isActive;
   }
 
   pullDomainEvents(): DomainEvent[] {

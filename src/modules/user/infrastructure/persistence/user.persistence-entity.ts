@@ -19,4 +19,6 @@ export class UserPersistenceEntity {
     default: UserRole.USER,
   })
   role: UserRole;
+  @Column({ default: true })
+  isActive: boolean;
 }
