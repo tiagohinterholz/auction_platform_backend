@@ -2,12 +2,10 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BIDDING_REPOSITORY } from '../../domain/ports/tokens';
 import { Bidding } from '../../domain/bidding.aggregate';
 import { InvalidBidPlaced } from '../../domain/exceptions/invalid-bid-placed.exception';
-import {
-  AUCTION_READ_REPOSITORY,
-  EVENT_BUS,
-} from '../../../auction/domain/ports/tokens';
+import { AUCTION_READ_REPOSITORY } from '../../../auction/domain/ports/tokens';
+import { EVENT_BUS } from '../../../../shared/events/tokens';
 
-import type { EventBus } from 'src/modules/auction/domain/ports/event-bus.port';
+import type { EventBus } from 'src/shared/events/event-bus.port';
 import type { BiddingRepositoryPort } from '../../domain/ports/bidding-repository-port';
 import { AuctionReadRepository } from 'src/modules/auction/application/read-models/auction-read.repository';
 import { AuctionStatus } from 'src/modules/auction/domain/enums/auction-status.enum';

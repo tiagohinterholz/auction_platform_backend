@@ -1,7 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { AuctionRepository } from '../../infrastructure/repository/auction.repository';
-import type { EventBus } from '../../domain/ports/event-bus.port';
-import { AUCTION_REPOSITORY, EVENT_BUS } from '../../domain/ports/tokens';
+import type { EventBus } from '../../../../shared/events/event-bus.port';
+import { AUCTION_REPOSITORY } from '../../domain/ports/tokens';
+import { EVENT_BUS } from '../../../../shared/events/tokens';
 
 @Injectable()
 export class CancelAuctionUseCase {
