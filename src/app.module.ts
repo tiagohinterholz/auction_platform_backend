@@ -12,6 +12,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
 import { UserModule } from './modules/user/user.module';
+import { EmailModule } from './shared/email/email.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +29,7 @@ import { UserModule } from './modules/user/user.module';
     EventsModule,
     NotificationsModule,
     LocksModule,
+    EmailModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
