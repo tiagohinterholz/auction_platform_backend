@@ -2,8 +2,8 @@ import { Inject, Module, OnModuleInit } from '@nestjs/common';
 import {
   AUCTION_READ_REPOSITORY,
   AUCTION_REPOSITORY,
-  EVENT_BUS,
 } from './domain/ports/tokens';
+import { EVENT_BUS } from '../../shared/events/tokens';
 import { AuctionRepository } from './infrastructure/repository/auction.repository';
 import { AuctionController } from './presentation/controllers/auction.controller';
 import { CreateAuctionUseCase } from './application/use-cases/create-auction.use-case';
@@ -31,7 +31,7 @@ import { BullModule } from '@nestjs/bullmq';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuctionPersistenceEntity } from './infrastructure/persistence/auction.persistence-entity';
 import { AuctionReadModel } from './application/read-models/auction-read.model';
-import type { EventBus } from './domain/ports/event-bus.port';
+import type { EventBus } from '../../shared/events/event-bus.port';
 
 @Module({
   imports: [

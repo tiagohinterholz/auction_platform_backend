@@ -1,4 +1,4 @@
-import { DomainEvent } from './events/domain-event';
+import { DomainEvent } from '../../../shared/events/domain-event';
 import { InvalidBidPlaced } from './exceptions/invalid-bid-placed.exception';
 import { BidPlacedEvent } from './events/bid-placed.event';
 

@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { EVENT_BUS } from 'src/modules/auction/domain/ports/tokens';
+import { EVENT_BUS } from 'src/shared/events/tokens';
 import { InMemoryEventBus } from 'src/shared/events/in-memory-event-bus';
 
 @Global()

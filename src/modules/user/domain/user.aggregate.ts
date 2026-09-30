@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { DomainEvent } from './events/domain-event';
+import { DomainEvent } from '../../../shared/events/domain-event';
 import { UserCreated } from './events/user-created.event';
 import { UserUpdated } from './events/user-updated.event';
 import { UserDeleted } from './events/user-deleted.event';

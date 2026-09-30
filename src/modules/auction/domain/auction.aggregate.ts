@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 import { AuctionStatus } from './enums/auction-status.enum';
 import { InvalidAuctionTransitionException } from './exceptions/invalid-auction-transition.exception';
 import { InvalidAuctionTimeException } from './exceptions/invalid-auction-time.exception';
-import { DomainEvent } from './events/domain-event';
+import { DomainEvent } from '../../../shared/events/domain-event';
 import { AuctionScheduledEvent } from './events/auction-scheduled.event';
 import { AuctionStartedEvent } from './events/auction-started.event';
 import { AuctionFinishedEvent } from './events/auction-finished.event';

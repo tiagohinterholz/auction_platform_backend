@@ -1,4 +1,4 @@
-import { DomainEvent } from './domain-event';
+import { DomainEvent } from '../../../../shared/events/domain-event';
 
 export class UserDeleted implements DomainEvent<
   'UserDeleted',

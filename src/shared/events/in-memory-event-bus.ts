@@ -1,7 +1,7 @@
-import { DomainEvent } from 'src/modules/auction/domain/events/domain-event';
-import { EventBus } from 'src/modules/auction/domain/ports/event-bus.port';
+import { DomainEvent } from 'src/shared/events/domain-event';
+import { EventBus } from 'src/shared/events/event-bus.port';
 
-type Handler<T> = (event: T) => Promise<void>;
+type Handler<T> = (event: T) => void | Promise<void>;
 
 export class InMemoryEventBus implements EventBus {
   private handlers = new Map<string, Handler<any>[]>();
