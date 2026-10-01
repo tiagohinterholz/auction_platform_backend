@@ -118,4 +118,3 @@ export class AuctionController {
     return auction;
   }
 }
-

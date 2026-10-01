@@ -1,7 +1,7 @@
 export enum AuctionStatus {
-  CREATED = 'CREATED',
-  SCHEDULED = 'SCHEDULED',
-  ACTIVE = 'ACTIVE',
-  FINISHED = 'FINISHED',
-  CANCELLED = 'CANCELLED',
+  CREATED = 'created',
+  SCHEDULED = 'scheduled',
+  ACTIVE = 'active',
+  FINISHED = 'finished',
+  CANCELLED = 'cancelled',
 }
