@@ -24,4 +24,3 @@ export class AuctionReadRepository {
     return this.repo.findBy({ userId });
   }
 }
-

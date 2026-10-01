@@ -54,4 +54,3 @@ export class BiddingController {
     return { status: 'created' };
   }
 }
-
